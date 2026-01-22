@@ -136,7 +136,7 @@ export default function FAQSection() {
           >
             Questions Fréquentes
           </h2>
-          <p className="text-gray-500 text-xs">
+          <p className="text-xs" style={{ color: ACCENT_BLUE }}>
             Tout pour voyager sereinement
           </p>
         </div>

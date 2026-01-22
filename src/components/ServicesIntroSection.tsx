@@ -58,7 +58,7 @@ export default function ServicesIntroSection() {
               className="font-serif text-2xl md:text-4xl lg:text-5xl font-light tracking-wide text-[#1a1a1a]"
             >
               Votre <span style={{ color: ACCENT_BLUE }}>Satisfaction</span> est Notre{' '}
-              <span className="inline-block relative">
+              <span className="inline-block relative" style={{ color: ACCENT_BLUE }}>
                 Priorité
                 <AnimatedUnderline isInView={isTitleInView} />
               </span>
@@ -89,11 +89,13 @@ export default function ServicesIntroSection() {
             <div className="flex justify-center mt-2 mb-4">
               <button
                 onClick={() => setIsExpanded(!isExpanded)}
-                className="flex items-center gap-1.5 text-sm font-light text-black/60 hover:text-black/80 transition-colors duration-200"
+                className="flex items-center gap-1.5 text-sm font-light transition-colors duration-200"
+                style={{ color: ACCENT_BLUE }}
               >
                 <span>{isExpanded ? 'Voir moins' : 'Lire la suite'}</span>
                 <ChevronDown 
-                  className={`w-4 h-4 transition-transform duration-200 text-black/60 ${isExpanded ? 'rotate-180' : ''}`}
+                  className={`w-4 h-4 transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`}
+                  style={{ color: ACCENT_BLUE }}
                 />
               </button>
             </div>
