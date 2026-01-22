@@ -137,7 +137,7 @@ export default function ServicesCarouselSection() {
             msOverflowStyle: 'none',
             scrollPaddingLeft: '0px',
             paddingLeft: '0px',
-            touchAction: 'pan-x'
+            touchAction: 'pan-y pan-x'
           }}
           onScroll={handleScroll}
         >
