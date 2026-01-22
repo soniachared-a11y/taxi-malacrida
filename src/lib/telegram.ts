@@ -8,6 +8,7 @@ interface ReservationData {
   nom: string;
   telephone: string;
   email: string;
+  message?: string;
   distance_km: number;
   prix_euros: number;
 }
@@ -26,7 +27,8 @@ export const sendTelegramNotification = async (reservation: ReservationData): Pr
         depart: reservation.depart,
         arrivee: reservation.arrivee,
         date_heure: reservation.date_heure,
-        prix: `${reservation.prix_euros}€`
+        prix: `${reservation.prix_euros}€`,
+        message: reservation.message || ''
       })
     });
 

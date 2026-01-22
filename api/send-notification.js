@@ -12,7 +12,7 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' })
   }
 
-  const { nom, telephone, depart, arrivee, date_heure, prix } = req.body
+  const { nom, telephone, depart, arrivee, date_heure, prix, message: clientMessage } = req.body
 
   if (!nom || !telephone || !depart || !arrivee || !date_heure || !prix) {
     return res.status(400).json({ error: 'Données manquantes' })
@@ -29,6 +29,7 @@ export default async function handler(req, res) {
 🕐 Date/Heure : ${date_heure}
 
 💰 Prix estimé : ${prix}€
+${clientMessage ? `\n💬 Message : ${clientMessage}` : ''}
 
 ✅ Réservation confirmée
   `

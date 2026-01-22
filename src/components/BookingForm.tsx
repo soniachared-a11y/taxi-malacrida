@@ -23,6 +23,7 @@ const bookingSchema = z.object({
   nom: z.string().trim().min(2, 'Nom requis (min 2 caractères)').max(100, 'Nom trop long'),
   telephone: z.string().regex(/^(?:(?:\+|00)33|0)\s*[1-9](?:[\s.-]*\d{2}){4}$/, 'Numéro de téléphone invalide'),
   email: z.string().trim().email('Email invalide').max(255, 'Email trop long'),
+  message: z.string().trim().max(500, 'Message trop long (max 500 caractères)').optional(),
 });
 
 type BookingFormData = z.infer<typeof bookingSchema>;
@@ -104,6 +105,7 @@ const BookingForm = () => {
         email: data.email,
         distance_km: quote.distance_km,
         prix_euros: quote.prix_euros,
+        message: data.message || '',
       };
 
       // Save to Supabase
@@ -122,6 +124,7 @@ const BookingForm = () => {
         date_heure: format(dateHeure, "dd/MM/yyyy 'à' HH:mm", { locale: fr }),
         distance_km: quote.distance_km,
         prix_euros: quote.prix_euros,
+        message: data.message || '',
       });
 
       setStep('success');
@@ -403,6 +406,21 @@ const BookingForm = () => {
                       </div>
                       {errors.email && (
                         <p className="text-red-500 text-xs mt-1">{errors.email.message}</p>
+                      )}
+                    </div>
+
+                    <div>
+                      <label className="block text-xs text-gray-500 mb-1.5">
+                        Message ou précisions <span className="text-gray-400">(optionnel)</span>
+                      </label>
+                      <textarea
+                        {...register('message')}
+                        placeholder="Informations complémentaires, demandes spéciales..."
+                        rows={3}
+                        className="w-full pl-3 pr-3 pt-2.5 pb-2.5 border border-gray-200 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent resize-none"
+                      />
+                      {errors.message && (
+                        <p className="text-red-500 text-xs mt-1">{errors.message.message}</p>
                       )}
                     </div>
 

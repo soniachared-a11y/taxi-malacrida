@@ -20,6 +20,7 @@ export interface Reservation {
   nom: string;
   telephone: string;
   email: string;
+  message?: string;
   distance_km?: number;
   prix_euros?: number;
   created_at?: string;
