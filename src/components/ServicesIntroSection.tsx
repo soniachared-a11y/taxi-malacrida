@@ -7,7 +7,7 @@ const ACCENT_BLUE = '#001F3F';
 const AnimatedUnderline = ({ isInView }: { isInView: boolean }) => {
   return (
     <motion.span
-      className="absolute bottom-0 left-0 h-1 rounded-full"
+      className="absolute bottom-0 left-0 h-[2px] rounded-full"
       style={{ backgroundColor: ACCENT_BLUE }}
       initial={{ width: '0%' }}
       animate={isInView ? { width: '100%' } : { width: '0%' }}
@@ -22,7 +22,7 @@ const AnimatedUnderline = ({ isInView }: { isInView: boolean }) => {
 
 export default function ServicesIntroSection() {
   const titleRef = useRef<HTMLHeadingElement>(null);
-  const isTitleInView = useInView(titleRef, { once: true, margin: "-200px", amount: 0.1 });
+  const isTitleInView = useInView(titleRef, { once: true, margin: "-200px", amount: 0.1, threshold: 0.1 });
 
   return (
     <section 
