@@ -3,10 +3,10 @@ import { useRef } from 'react';
 
 const ACCENT_BLUE = '#001F3F';
 
-// Animated underline component
+// Animated underline component - applies only to the word "Priorité"
 const AnimatedUnderline = ({ isInView }: { isInView: boolean }) => {
   return (
-    <motion.div
+    <motion.span
       className="absolute bottom-0 left-0 h-1 rounded-full"
       style={{ backgroundColor: ACCENT_BLUE }}
       initial={{ width: '0%' }}
@@ -14,7 +14,7 @@ const AnimatedUnderline = ({ isInView }: { isInView: boolean }) => {
       transition={{ 
         duration: 1.2, 
         ease: [0.65, 0, 0.35, 1],
-        delay: 0.2
+        delay: 0.4
       }}
     />
   );
@@ -43,9 +43,12 @@ export default function ServicesIntroSection() {
               ref={titleRef}
               className="font-serif text-2xl md:text-4xl lg:text-5xl font-light tracking-wide text-[#1a1a1a]"
             >
-              Votre <span style={{ color: ACCENT_BLUE }}>Satisfaction</span> est Notre Priorité
+              Votre <span style={{ color: ACCENT_BLUE }}>Satisfaction</span> est Notre{' '}
+              <span className="inline-block relative">
+                Priorité
+                <AnimatedUnderline isInView={isTitleInView} />
+              </span>
             </h2>
-            <AnimatedUnderline isInView={isTitleInView} />
           </div>
           
           <h3 className="font-serif text-lg md:text-xl font-light mt-4 md:mt-5 lg:mt-6 mb-3 md:mb-4" style={{ color: ACCENT_BLUE }}>

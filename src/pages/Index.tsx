@@ -12,7 +12,7 @@ import FloatingPhoneButton from '@/components/FloatingPhoneButton';
 
 const Index = () => {
   return (
-    <main className="min-h-screen">
+    <main className="min-h-screen overflow-x-hidden max-w-full">
       <Navigation />
       <HeroSection />
       <ServicesIntroSection />
