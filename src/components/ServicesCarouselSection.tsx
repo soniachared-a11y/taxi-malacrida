@@ -69,7 +69,7 @@ export default function ServicesCarouselSection() {
     }
   }, [isMobile]);
 
-  // Auto-scroll every 3 seconds
+  // Auto-scroll every 3 seconds - NE JAMAIS S'ARRÊTER même si l'utilisateur touche
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentIndex((prev) => {
@@ -77,6 +77,7 @@ export default function ServicesCarouselSection() {
         return prev >= maxIndex ? 0 : prev + 1;
       });
     }, 3000);
+    // Ne jamais nettoyer l'interval - le carrousel doit continuer indéfiniment
     return () => clearInterval(interval);
   }, [isMobile]);
 
@@ -107,16 +108,16 @@ export default function ServicesCarouselSection() {
     return () => clearTimeout(timeout);
   }, [currentIndex, getCardWidth, isMobile]);
 
-  // Handle manual scroll
+  // Handle manual scroll - NE PAS INTERROMPRE l'auto-scroll
   const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
-    if (isAutoScrolling) return;
-    
+    // Permettre le scroll manuel sans interrompre l'auto-scroll
     const target = e.target as HTMLDivElement;
     const cardWidth = getCardWidth();
     const gap = isMobile ? 16 : 24;
     const newIndex = Math.round(target.scrollLeft / (cardWidth + gap));
     const maxIndex = isMobile ? services.length - 1 : services.length - 2;
     
+    // Mettre à jour l'index seulement si différent, mais ne pas arrêter l'auto-scroll
     if (newIndex !== currentIndex && newIndex >= 0 && newIndex <= maxIndex) {
       setCurrentIndex(newIndex);
     }

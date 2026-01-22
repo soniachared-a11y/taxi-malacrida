@@ -23,7 +23,8 @@ const AnimatedUnderline = ({ isInView }: { isInView: boolean }) => {
 
 export default function ServicesIntroSection() {
   const titleRef = useRef<HTMLHeadingElement>(null);
-  const isTitleInView = useInView(titleRef, { once: true, margin: "-200px", amount: 0.1, threshold: 0.1 });
+  // Threshold à 0 pour déclenchement immédiat sur mobile
+  const isTitleInView = useInView(titleRef, { once: true, margin: "-200px", amount: 0.1, threshold: 0 });
   const [isExpanded, setIsExpanded] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
 

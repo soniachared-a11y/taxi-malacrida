@@ -52,17 +52,17 @@ const AnimatedCounter = ({ value, duration = 2000 }: { value: number; duration?:
   const [count, setCount] = useState(0);
   const [hasAnimated, setHasAnimated] = useState(false);
   const ref = useRef<HTMLSpanElement>(null);
-  // Threshold réduit à 0.1 pour déclencher plus tôt sur mobile
+  // Threshold à 0.1 pour déclencher immédiatement sur mobile
   const isInView = useInView(ref, { once: true, margin: '-100px', threshold: 0.1 });
 
   useEffect(() => {
-    // Fallback de sécurité : si après 3 secondes l'animation n'a pas démarré, afficher la valeur finale
+    // Fallback de sécurité : si après 1 seconde l'animation n'a pas démarré, afficher la valeur finale immédiatement
     const fallbackTimeout = setTimeout(() => {
       if (!hasAnimated && count === 0 && ref.current) {
         setCount(value);
         setHasAnimated(true);
       }
-    }, 3000);
+    }, 1000);
 
     // Animation normale si l'élément est en vue
     if (isInView && !hasAnimated) {
