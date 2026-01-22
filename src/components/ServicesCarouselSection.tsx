@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 // Import images localement
 import voitureEnRoute from '@/assets/services/voiture-en-route.jpg';
