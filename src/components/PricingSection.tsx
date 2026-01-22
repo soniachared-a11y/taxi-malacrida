@@ -1,7 +1,7 @@
 import { motion, useInView } from 'framer-motion';
 import { useRef } from 'react';
 import { Button } from '@/components/ui/button';
-import pricingSplitImage from '@/assets/pricing-split.png';
+import pricingSplitImage from '@/assets/pricing-split.jpg';
 
 const PricingSection = () => {
   const sectionRef = useRef(null);

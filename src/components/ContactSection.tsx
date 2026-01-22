@@ -4,7 +4,7 @@ import { MapPin, Calendar, Clock, ArrowRight, Flag, Phone, Mail, MessageSquare, 
 import { toast } from 'sonner';
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
-import contactBgImage from '@/assets/contact-bg-tesla.png';
+import contactBgImage from '@/assets/contact-bg-tesla.jpg';
 import AddressInputWithSuggestions from '@/components/AddressInputWithSuggestions';
 import SimpleRouteMap from '@/components/SimpleRouteMap';
 import { calculateRoute } from '@/lib/routing';

@@ -1,12 +1,12 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 
 // Import images localement
-import voitureEnRoute from '@/assets/services/voiture-en-route.png';
+import voitureEnRoute from '@/assets/services/voiture-en-route.jpg';
 import chauffeurJournee from '@/assets/services/chauffeur-journee.jpg';
-import shopping from '@/assets/services/shopping.png';
+import shopping from '@/assets/services/shopping.jpg';
 import vieuxPortMarseille from '@/assets/services/vieux-port-marseille.jpg';
 import evenements from '@/assets/services/evenements.jpg';
-import gare from '@/assets/services/gare.png';
+import gare from '@/assets/services/gare.jpg';
 
 const ACCENT_BLUE = '#001F3F';
 

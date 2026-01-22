@@ -35,14 +35,26 @@ ${clientMessage ? `\n💬 Message : ${clientMessage}` : ''}
   `
 
   try {
+    console.log('[Telegram] Début de l\'envoi de notification')
+    console.log('[Telegram] Données reçues:', { nom, telephone, depart, arrivee, date_heure, prix, message: clientMessage })
+    
     const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN
     const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID || "8582216343"
 
+    console.log('[Telegram] TELEGRAM_BOT_TOKEN présent:', !!TELEGRAM_BOT_TOKEN)
+    console.log('[Telegram] TELEGRAM_CHAT_ID:', TELEGRAM_CHAT_ID)
+
     if (!TELEGRAM_BOT_TOKEN) {
-      console.error('Variables Telegram manquantes')
-      return res.status(500).json({ error: 'Configuration serveur manquante' })
+      console.error('[Telegram] ERREUR: TELEGRAM_BOT_TOKEN manquant')
+      return res.status(500).json({ error: 'Configuration serveur manquante: TELEGRAM_BOT_TOKEN' })
     }
 
+    if (!TELEGRAM_CHAT_ID) {
+      console.error('[Telegram] ERREUR: TELEGRAM_CHAT_ID manquant')
+      return res.status(500).json({ error: 'Configuration serveur manquante: TELEGRAM_CHAT_ID' })
+    }
+
+    console.log('[Telegram] Envoi de la requête à l\'API Telegram...')
     const response = await fetch(
       `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`,
       {
@@ -55,15 +67,27 @@ ${clientMessage ? `\n💬 Message : ${clientMessage}` : ''}
       }
     )
 
+    console.log('[Telegram] Statut de la réponse:', response.status, response.statusText)
+
     if (!response.ok) {
       const errorText = await response.text()
-      console.error('Erreur Telegram API:', errorText)
-      return res.status(500).json({ error: 'Erreur notification' })
+      console.error('[Telegram] ERREUR API:', response.status, errorText)
+      return res.status(500).json({ 
+        error: 'Erreur notification Telegram',
+        details: errorText,
+        status: response.status
+      })
     }
 
-    return res.status(200).json({ success: true })
+    const responseData = await response.json()
+    console.log('[Telegram] SUCCÈS:', responseData)
+    return res.status(200).json({ success: true, telegramResponse: responseData })
   } catch (error) {
-    console.error('Erreur Telegram:', error)
-    return res.status(500).json({ error: 'Erreur notification' })
+    console.error('[Telegram] ERREUR EXCEPTION:', error.message)
+    console.error('[Telegram] Stack:', error.stack)
+    return res.status(500).json({ 
+      error: 'Erreur notification',
+      details: error.message
+    })
   }
 }
