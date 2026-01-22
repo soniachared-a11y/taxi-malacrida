@@ -1,10 +1,15 @@
 import { motion, useInView } from 'framer-motion';
 import { useRef, useState, useEffect } from 'react';
-import { MapPin, Calendar, Clock, ArrowRight, Flag } from 'lucide-react';
+import { MapPin, Calendar, Clock, ArrowRight, Flag, Phone, Mail, MessageSquare, User } from 'lucide-react';
 import { toast } from 'sonner';
+import { format } from 'date-fns';
+import { fr } from 'date-fns/locale';
 import contactBgImage from '@/assets/contact-bg-tesla.png';
 import AddressInputWithSuggestions from '@/components/AddressInputWithSuggestions';
 import SimpleRouteMap from '@/components/SimpleRouteMap';
+import { calculateRoute } from '@/lib/routing';
+import { supabase, type Reservation } from '@/lib/supabase';
+import { sendTelegramNotification } from '@/lib/telegram';
 
 const ACCENT_BLUE = '#001F3F';
 
@@ -14,6 +19,10 @@ const ContactSection = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [departure, setDeparture] = useState('');
   const [arrival, setArrival] = useState('');
+  const [nom, setNom] = useState('');
+  const [telephone, setTelephone] = useState('');
+  const [email, setEmail] = useState('');
+  const [message, setMessage] = useState('');
 
   // Listen for pre-fill event from Hero form
   useEffect(() => {
@@ -32,10 +41,96 @@ const ContactSection = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsSubmitting(true);
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-    toast.success('Demande envoyée ! Nous vous recontactons sous 30 minutes.');
-    setIsSubmitting(false);
-    (e.target as HTMLFormElement).reset();
+
+    try {
+      // Validation basique
+      if (!departure || departure.length < 5) {
+        toast.error('Veuillez entrer une adresse de départ valide');
+        setIsSubmitting(false);
+        return;
+      }
+      if (!arrival || arrival.length < 5) {
+        toast.error('Veuillez entrer une adresse d\'arrivée valide');
+        setIsSubmitting(false);
+        return;
+      }
+      if (!nom || nom.length < 2) {
+        toast.error('Veuillez entrer votre nom');
+        setIsSubmitting(false);
+        return;
+      }
+      if (!telephone || !/^(?:(?:\+|00)33|0)\s*[1-9](?:[\s.-]*\d{2}){4}$/.test(telephone)) {
+        toast.error('Veuillez entrer un numéro de téléphone valide');
+        setIsSubmitting(false);
+        return;
+      }
+      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        toast.error('Veuillez entrer un email valide');
+        setIsSubmitting(false);
+        return;
+      }
+
+      const formData = new FormData(e.currentTarget);
+      const date = formData.get('date') as string;
+      const time = formData.get('time') as string;
+
+      if (!date || !time) {
+        toast.error('Veuillez sélectionner une date et une heure');
+        setIsSubmitting(false);
+        return;
+      }
+
+      // Calculer la route et le prix
+      const routeResult = await calculateRoute(departure, arrival);
+
+      // Créer la date/heure complète
+      const dateHeure = new Date(`${date}T${time}`);
+      
+      const reservationData: Reservation = {
+        depart: departure,
+        arrivee: arrival,
+        date_heure: dateHeure.toISOString(),
+        nom: nom,
+        telephone: telephone,
+        email: email,
+        message: message || '',
+        distance_km: routeResult.distance_km,
+        prix_euros: routeResult.prix_euros,
+      };
+
+      // Sauvegarder dans Supabase
+      const { error: dbError } = await supabase
+        .from('reservations')
+        .insert(reservationData);
+
+      if (dbError) {
+        console.error('Erreur Supabase:', dbError);
+        throw new Error('Erreur lors de l\'enregistrement');
+      }
+
+      // Envoyer notification Telegram
+      await sendTelegramNotification({
+        ...reservationData,
+        date_heure: format(dateHeure, "dd/MM/yyyy 'à' HH:mm", { locale: fr }),
+        distance_km: routeResult.distance_km,
+        prix_euros: routeResult.prix_euros,
+        message: message || '',
+      });
+
+      toast.success(`Réservation confirmée ! Prix estimé : ${routeResult.prix_euros.toFixed(2)}€`);
+      (e.target as HTMLFormElement).reset();
+      setDeparture('');
+      setArrival('');
+      setNom('');
+      setTelephone('');
+      setEmail('');
+      setMessage('');
+    } catch (error) {
+      console.error('Erreur réservation:', error);
+      toast.error('Une erreur est survenue. Veuillez réessayer ou nous appeler au 07 84 62 86 40');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -202,6 +297,82 @@ const ContactSection = () => {
                         className="w-full pl-10 pr-3 py-2.5 rounded-lg bg-gray-50 border border-gray-200 focus:border-[#001F3F] focus:ring-2 focus:ring-[#001F3F]/20 outline-none transition-all text-gray-800 text-sm"
                       />
                     </div>
+                  </div>
+                </div>
+
+                {/* Nom */}
+                <div>
+                  <label className="block text-xs font-medium text-gray-500 mb-1">
+                    Nom complet
+                  </label>
+                  <div className="relative">
+                    <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                    <input
+                      type="text"
+                      name="nom"
+                      value={nom}
+                      onChange={(e) => setNom(e.target.value)}
+                      placeholder="Jean Dupont"
+                      required
+                      className="w-full pl-10 pr-3 py-2.5 rounded-lg bg-gray-50 border border-gray-200 focus:border-[#001F3F] focus:ring-2 focus:ring-[#001F3F]/20 outline-none transition-all text-gray-800 text-sm"
+                    />
+                  </div>
+                </div>
+
+                {/* Téléphone */}
+                <div>
+                  <label className="block text-xs font-medium text-gray-500 mb-1">
+                    Téléphone
+                  </label>
+                  <div className="relative">
+                    <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                    <input
+                      type="tel"
+                      name="telephone"
+                      value={telephone}
+                      onChange={(e) => setTelephone(e.target.value)}
+                      placeholder="06 12 34 56 78"
+                      required
+                      className="w-full pl-10 pr-3 py-2.5 rounded-lg bg-gray-50 border border-gray-200 focus:border-[#001F3F] focus:ring-2 focus:ring-[#001F3F]/20 outline-none transition-all text-gray-800 text-sm"
+                    />
+                  </div>
+                </div>
+
+                {/* Email */}
+                <div>
+                  <label className="block text-xs font-medium text-gray-500 mb-1">
+                    Email
+                  </label>
+                  <div className="relative">
+                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                    <input
+                      type="email"
+                      name="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="jean.dupont@email.com"
+                      required
+                      className="w-full pl-10 pr-3 py-2.5 rounded-lg bg-gray-50 border border-gray-200 focus:border-[#001F3F] focus:ring-2 focus:ring-[#001F3F]/20 outline-none transition-all text-gray-800 text-sm"
+                    />
+                  </div>
+                </div>
+
+                {/* Message */}
+                <div>
+                  <label className="block text-xs font-medium text-gray-500 mb-1">
+                    Message ou précisions <span className="text-gray-400">(optionnel)</span>
+                  </label>
+                  <div className="relative">
+                    <MessageSquare className="absolute left-3 top-3 w-4 h-4 text-gray-400" />
+                    <textarea
+                      name="message"
+                      value={message}
+                      onChange={(e) => setMessage(e.target.value)}
+                      placeholder="Informations complémentaires, demandes spéciales..."
+                      rows={3}
+                      maxLength={500}
+                      className="w-full pl-10 pr-3 py-2.5 rounded-lg bg-gray-50 border border-gray-200 focus:border-[#001F3F] focus:ring-2 focus:ring-[#001F3F]/20 outline-none transition-all text-gray-800 text-sm resize-none"
+                    />
                   </div>
                 </div>
 
