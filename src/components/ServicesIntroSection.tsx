@@ -1,5 +1,6 @@
 import { motion, useInView } from 'framer-motion';
-import { useRef } from 'react';
+import { useRef, useState, useEffect } from 'react';
+import { ChevronDown } from 'lucide-react';
 
 const ACCENT_BLUE = '#001F3F';
 
@@ -23,6 +24,18 @@ const AnimatedUnderline = ({ isInView }: { isInView: boolean }) => {
 export default function ServicesIntroSection() {
   const titleRef = useRef<HTMLHeadingElement>(null);
   const isTitleInView = useInView(titleRef, { once: true, margin: "-200px", amount: 0.1, threshold: 0.1 });
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Détecter si on est sur mobile
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768); // md breakpoint
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   return (
     <section 
@@ -54,15 +67,37 @@ export default function ServicesIntroSection() {
           <h3 className="font-serif text-lg md:text-xl font-light mt-4 md:mt-5 lg:mt-6 mb-3 md:mb-4" style={{ color: ACCENT_BLUE }}>
             L'Excellence au Service de vos Déplacements
           </h3>
+          
+          {/* Premier paragraphe - toujours visible */}
           <p className="font-sans text-black/70 max-w-3xl mx-auto text-[15px] md:text-[17px] font-light leading-relaxed md:leading-[1.8] px-2 mb-3 md:mb-4">
             Depuis notre installation à Aix-en-Provence, Taxi Malacrida s'est donné une mission : transformer chaque trajet en une expérience premium et mémorable. Notre flotte diversifiée - Tesla Model Y et Model 3 pour vos déplacements individuels ou en petit groupe, Mercedes V-Class pour vos transferts en famille ou en équipe - incarne notre engagement envers l'innovation, le confort et le respect de l'environnement.
           </p>
-          <p className="font-sans text-black/60 max-w-3xl mx-auto mb-3 md:mb-4 text-[14px] md:text-[15px] font-light leading-relaxed px-2">
-            Que vous soyez un professionnel pressé, une famille en voyage, un couple en escapade ou un groupe d'amis, nous adaptons notre service à vos besoins. Transferts aéroport, déplacements d'affaires, événements familiaux, sorties entre amis : chaque situation mérite la même attention et le même professionnalisme. Notre connaissance approfondie de la région PACA, de Marseille à Monaco, garantit des trajets optimisés et une disponibilité <span style={{ color: ACCENT_BLUE }}>24h/24, 7j/7</span>.
-          </p>
-          <p className="font-sans text-black/60 max-w-3xl mx-auto text-[14px] md:text-[15px] font-light leading-relaxed px-2">
-            Plus qu'un simple transport, nous offrons une bulle de sérénité où technologie et élégance se rencontrent. Chaque véhicule de notre flotte est soigneusement entretenu et équipé pour vous offrir confort, discrétion et tranquillité d'esprit, quel que soit votre destination.
-          </p>
+          
+          {/* Paragraphes supplémentaires - masqués sur mobile si non étendu */}
+          <div className={`max-w-3xl mx-auto px-2 ${isMobile && !isExpanded ? 'hidden' : ''} md:block`}>
+            <p className="font-sans text-black/60 mb-3 md:mb-4 text-[14px] md:text-[15px] font-light leading-relaxed">
+              Que vous soyez un professionnel pressé, une famille en voyage, un couple en escapade ou un groupe d'amis, nous adaptons notre service à vos besoins. Transferts aéroport, déplacements d'affaires, événements familiaux, sorties entre amis : chaque situation mérite la même attention et le même professionnalisme. Notre connaissance approfondie de la région PACA, de Marseille à Monaco, garantit des trajets optimisés et une disponibilité <span style={{ color: ACCENT_BLUE }}>24h/24, 7j/7</span>.
+            </p>
+            <p className="font-sans text-black/60 text-[14px] md:text-[15px] font-light leading-relaxed">
+              Plus qu'un simple transport, nous offrons une bulle de sérénité où technologie et élégance se rencontrent. Chaque véhicule de notre flotte est soigneusement entretenu et équipé pour vous offrir confort, discrétion et tranquillité d'esprit, quel que soit votre destination.
+            </p>
+          </div>
+          
+          {/* Bouton "Lire la suite" - uniquement sur mobile */}
+          {isMobile && (
+            <div className="flex justify-center mt-2 mb-4">
+              <button
+                onClick={() => setIsExpanded(!isExpanded)}
+                className="flex items-center gap-1.5 text-sm font-light text-black/60 hover:text-black transition-colors duration-200"
+                style={{ color: isExpanded ? ACCENT_BLUE : undefined }}
+              >
+                <span>{isExpanded ? 'Voir moins' : 'Lire la suite'}</span>
+                <ChevronDown 
+                  className={`w-4 h-4 transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`}
+                />
+              </button>
+            </div>
+          )}
         </motion.div>
       </div>
     </section>
