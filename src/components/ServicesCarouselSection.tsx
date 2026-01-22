@@ -46,8 +46,9 @@ const services = [
 export default function ServicesCarouselSection() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
-  const [isAutoScrolling, setIsAutoScrolling] = useState(false);
   const carouselRef = useRef<HTMLDivElement>(null);
+  const autoScrollRef = useRef<NodeJS.Timeout | null>(null);
+  const isUserScrollingRef = useRef(false);
 
   // Detect mobile
   useEffect(() => {
@@ -57,70 +58,65 @@ export default function ServicesCarouselSection() {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-  // Calculate card width including gap
-  const getCardWidth = useCallback(() => {
-    if (!carouselRef.current) return 0;
-    const containerWidth = carouselRef.current.offsetWidth;
-    const gap = isMobile ? 16 : 24; // gap-4 = 16px, gap-6 = 24px
-    if (isMobile) {
-      return containerWidth;
-    } else {
-      return (containerWidth - gap) / 2;
-    }
-  }, [isMobile]);
-
-  // Auto-scroll every 3 seconds - NE JAMAIS S'ARRÊTER même si l'utilisateur touche
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentIndex((prev) => {
-        const maxIndex = isMobile ? services.length - 1 : services.length - 2;
-        return prev >= maxIndex ? 0 : prev + 1;
-      });
-    }, 3000);
-    // Ne jamais nettoyer l'interval - le carrousel doit continuer indéfiniment
-    return () => clearInterval(interval);
-  }, [isMobile]);
-
-  // Scroll to current index - disable snap during programmatic scroll
+  // Auto-scroll simple - seulement si l'utilisateur ne scroll pas manuellement
   useEffect(() => {
     if (!carouselRef.current) return;
+
+    const startAutoScroll = () => {
+      if (autoScrollRef.current) clearInterval(autoScrollRef.current);
+      
+      autoScrollRef.current = setInterval(() => {
+        if (!isUserScrollingRef.current && carouselRef.current) {
+          setCurrentIndex((prev) => {
+            const maxIndex = isMobile ? services.length - 1 : services.length - 2;
+            return prev >= maxIndex ? 0 : prev + 1;
+          });
+        }
+      }, 4000);
+    };
+
+    startAutoScroll();
+    return () => {
+      if (autoScrollRef.current) clearInterval(autoScrollRef.current);
+    };
+  }, [isMobile]);
+
+  // Scroll vers l'index actuel - seulement si pas de scroll utilisateur en cours
+  useEffect(() => {
+    if (!carouselRef.current || isUserScrollingRef.current) return;
     
     const carousel = carouselRef.current;
-    const cardWidth = getCardWidth();
+    const containerWidth = carousel.offsetWidth;
     const gap = isMobile ? 16 : 24;
+    const cardWidth = isMobile ? containerWidth : (containerWidth - gap) / 2;
     const scrollTarget = currentIndex * (cardWidth + gap);
-    
-    // Disable snap during auto-scroll
-    setIsAutoScrolling(true);
-    carousel.style.scrollSnapType = 'none';
     
     carousel.scrollTo({
       left: scrollTarget,
       behavior: 'smooth'
     });
+  }, [currentIndex, isMobile]);
 
-    // Re-enable snap after scroll completes
-    const timeout = setTimeout(() => {
-      carousel.style.scrollSnapType = 'x mandatory';
-      setIsAutoScrolling(false);
-    }, 500);
-
-    return () => clearTimeout(timeout);
-  }, [currentIndex, getCardWidth, isMobile]);
-
-  // Handle manual scroll - NE PAS INTERROMPRE l'auto-scroll
-  const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
-    // Permettre le scroll manuel sans interrompre l'auto-scroll
-    const target = e.target as HTMLDivElement;
-    const cardWidth = getCardWidth();
+  // Handle manual scroll - SIMPLIFIÉ
+  const handleScroll = () => {
+    if (!carouselRef.current) return;
+    
+    isUserScrollingRef.current = true;
+    const carousel = carouselRef.current;
+    const containerWidth = carousel.offsetWidth;
     const gap = isMobile ? 16 : 24;
-    const newIndex = Math.round(target.scrollLeft / (cardWidth + gap));
+    const cardWidth = isMobile ? containerWidth : (containerWidth - gap) / 2;
+    const newIndex = Math.round(carousel.scrollLeft / (cardWidth + gap));
     const maxIndex = isMobile ? services.length - 1 : services.length - 2;
     
-    // Mettre à jour l'index seulement si différent, mais ne pas arrêter l'auto-scroll
     if (newIndex !== currentIndex && newIndex >= 0 && newIndex <= maxIndex) {
       setCurrentIndex(newIndex);
     }
+    
+    // Réactiver l'auto-scroll après 2 secondes d'inactivité
+    setTimeout(() => {
+      isUserScrollingRef.current = false;
+    }, 2000);
   };
 
   const maxDots = isMobile ? services.length : services.length - 1;
@@ -128,52 +124,52 @@ export default function ServicesCarouselSection() {
   return (
     <section id="services-carousel" className="bg-[#f9f9f9] py-8 md:py-12">
       <div className="container mx-auto px-4 md:px-8 w-full flex flex-col">
-        {/* Carousel Container */}
+        {/* Carousel Container - SIMPLIFIÉ pour swipe libre */}
         <div 
           ref={carouselRef}
-          className="flex overflow-x-auto overflow-y-hidden snap-x snap-mandatory scrollbar-hide gap-4 md:gap-6"
+          className="flex overflow-x-auto overflow-y-hidden scrollbar-hide gap-4 md:gap-6"
           style={{ 
             WebkitOverflowScrolling: 'touch',
             scrollbarWidth: 'none',
             msOverflowStyle: 'none',
             scrollPaddingLeft: '0px',
             paddingLeft: '0px',
-            touchAction: 'pan-y pan-x'
+            touchAction: 'pan-y pan-x',
+            scrollSnapType: 'none' // Pas de snap agressif - swipe libre
           }}
           onScroll={handleScroll}
+          onTouchStart={() => {
+            isUserScrollingRef.current = true;
+          }}
+          onTouchEnd={() => {
+            setTimeout(() => {
+              isUserScrollingRef.current = false;
+            }, 2000);
+          }}
         >
           {services.map((service, index) => (
             <div
               key={index}
-              className="snap-start flex-shrink-0 overflow-hidden rounded-xl transition-all duration-300 hover:shadow-2xl hover:scale-[1.02] cursor-pointer"
+              className="flex-shrink-0 overflow-hidden rounded-xl transition-all duration-300 hover:shadow-2xl hover:scale-[1.02] cursor-pointer"
               style={{
                 background: '#000000',
                 height: isMobile ? '520px' : '600px',
                 width: isMobile ? '100%' : 'calc(50% - 12px)',
                 minWidth: isMobile ? '100%' : 'calc(50% - 12px)',
-                touchAction: 'pan-x'
+                touchAction: 'pan-x pan-y' // Permet swipe horizontal ET scroll vertical
               }}
             >
               {/* Image */}
               <div 
                 className="w-full overflow-hidden"
                 style={{
-                  height: isMobile ? '280px' : '360px',
-                  touchAction: 'none',
-                  pointerEvents: 'none'
+                  height: isMobile ? '280px' : '360px'
                 }}
               >
                 <img
                   src={service.image}
                   alt={service.title}
                   className="w-full h-full object-cover"
-                  style={{
-                    touchAction: 'none',
-                    pointerEvents: 'none',
-                    userSelect: 'none',
-                    WebkitUserSelect: 'none',
-                    WebkitTouchCallout: 'none'
-                  }}
                   draggable={false}
                 />
               </div>
