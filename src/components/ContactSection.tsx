@@ -93,7 +93,7 @@ const ContactSection = () => {
             style={{ zIndex: 1 }}
           >
             <form 
-              action="https://formsubmit.co/ouerfelli.yassin@outlook.fr"
+              action="https://formsubmit.co/ouerfelli.yassino@gmail.com"
               method="POST"
               className="bg-white rounded-xl shadow-xl p-4 md:p-5 relative"
               style={{ boxShadow: '0 15px 40px rgba(0,0,0,0.25)' }}
