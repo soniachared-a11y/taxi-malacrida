@@ -1,22 +1,15 @@
 import { motion, useInView } from 'framer-motion';
 import { useRef, useState, useEffect } from 'react';
 import { MapPin, Calendar, Clock, ArrowRight, Flag, Phone, Mail, MessageSquare, User } from 'lucide-react';
-import { toast } from 'sonner';
-import { format } from 'date-fns';
-import { fr } from 'date-fns/locale';
 import contactBgImage from '@/assets/contact-bg-tesla.jpg';
 import AddressInputWithSuggestions from '@/components/AddressInputWithSuggestions';
 import SimpleRouteMap from '@/components/SimpleRouteMap';
-import { calculateRoute } from '@/lib/routing';
-import { supabase, type Reservation } from '@/lib/supabase';
-import { sendTelegramNotification } from '@/lib/telegram';
 
 const ACCENT_BLUE = '#001F3F';
 
 const ContactSection = () => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: '-50px' });
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [departure, setDeparture] = useState('');
   const [arrival, setArrival] = useState('');
   const [nom, setNom] = useState('');
@@ -37,101 +30,6 @@ const ContactSection = () => {
       window.removeEventListener('prefillBookingForm', handlePrefill as EventListener);
     };
   }, []);
-
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-
-    try {
-      // Validation basique
-      if (!departure || departure.length < 5) {
-        toast.error('Veuillez entrer une adresse de départ valide');
-        setIsSubmitting(false);
-        return;
-      }
-      if (!arrival || arrival.length < 5) {
-        toast.error('Veuillez entrer une adresse d\'arrivée valide');
-        setIsSubmitting(false);
-        return;
-      }
-      if (!nom || nom.length < 2) {
-        toast.error('Veuillez entrer votre nom');
-        setIsSubmitting(false);
-        return;
-      }
-      if (!telephone || !/^(?:(?:\+|00)33|0)\s*[1-9](?:[\s.-]*\d{2}){4}$/.test(telephone)) {
-        toast.error('Veuillez entrer un numéro de téléphone valide');
-        setIsSubmitting(false);
-        return;
-      }
-      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-        toast.error('Veuillez entrer un email valide');
-        setIsSubmitting(false);
-        return;
-      }
-
-      const formData = new FormData(e.currentTarget);
-      const date = formData.get('date') as string;
-      const time = formData.get('time') as string;
-
-      if (!date || !time) {
-        toast.error('Veuillez sélectionner une date et une heure');
-        setIsSubmitting(false);
-        return;
-      }
-
-      // Calculer la route et le prix
-      const routeResult = await calculateRoute(departure, arrival);
-
-      // Créer la date/heure complète
-      const dateHeure = new Date(`${date}T${time}`);
-      
-      const reservationData: Reservation = {
-        depart: departure,
-        arrivee: arrival,
-        date_heure: dateHeure.toISOString(),
-        nom: nom,
-        telephone: telephone,
-        email: email,
-        message: message || '',
-        distance_km: routeResult.distance_km,
-        prix_euros: routeResult.prix_euros,
-      };
-
-      // Sauvegarder dans Supabase
-      const { error: dbError } = await supabase
-        .from('reservations')
-        .insert(reservationData);
-
-      if (dbError) {
-        console.error('Erreur Supabase:', dbError);
-        throw new Error('Erreur lors de l\'enregistrement');
-      }
-
-      // Envoyer notification Telegram
-      await sendTelegramNotification({
-        ...reservationData,
-        date_heure: format(dateHeure, "dd/MM/yyyy 'à' HH:mm", { locale: fr }),
-        distance_km: routeResult.distance_km,
-        prix_euros: routeResult.prix_euros,
-        message: message || '',
-      });
-
-      toast.success(`Réservation confirmée ! Prix estimé : ${routeResult.prix_euros.toFixed(2)}€`);
-      (e.target as HTMLFormElement).reset();
-      setDeparture('');
-      setArrival('');
-      setNom('');
-      setTelephone('');
-      setEmail('');
-      setMessage('');
-    } catch (error) {
-      console.error('Erreur réservation:', error);
-      toast.error('Une erreur est survenue. Veuillez réessayer ou nous appeler au 07 84 62 86 40');
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
 
   return (
     <section 
@@ -195,10 +93,17 @@ const ContactSection = () => {
             style={{ zIndex: 1 }}
           >
             <form 
-              onSubmit={handleSubmit} 
+              action="https://formsubmit.co/ouerfelli.yassin@outlook.fr"
+              method="POST"
               className="bg-white rounded-xl shadow-xl p-4 md:p-5 relative"
               style={{ boxShadow: '0 15px 40px rgba(0,0,0,0.25)' }}
             >
+              {/* FormSubmit hidden fields */}
+              <input type="hidden" name="_subject" value="🚖 Nouvelle Réservation TAXI" />
+              <input type="hidden" name="_captcha" value="false" />
+              <input type="hidden" name="_template" value="table" />
+              <input type="hidden" name="_next" value="https://taximalacrida.com/merci" />
+
               <h3 
                 className="font-serif text-lg md:text-xl mb-3 md:mb-4 text-center"
                 style={{ color: ACCENT_BLUE }}
@@ -379,8 +284,7 @@ const ContactSection = () => {
                 {/* CTA Button */}
                 <button
                   type="submit"
-                  disabled={isSubmitting}
-                  className="w-full py-2.5 md:py-3 rounded-lg text-white font-medium text-sm tracking-wide transition-all duration-300 flex items-center justify-center gap-2 hover:shadow-lg hover:-translate-y-0.5 disabled:opacity-60 disabled:cursor-not-allowed mt-2"
+                  className="w-full py-2.5 md:py-3 rounded-lg text-white font-medium text-sm tracking-wide transition-all duration-300 flex items-center justify-center gap-2 hover:shadow-lg hover:-translate-y-0.5 mt-2"
                   style={{ 
                     backgroundColor: ACCENT_BLUE,
                     boxShadow: '0 4px 14px rgba(14,77,100,0.3)'
@@ -392,17 +296,8 @@ const ContactSection = () => {
                     e.currentTarget.style.backgroundColor = ACCENT_BLUE;
                   }}
                 >
-                  {isSubmitting ? (
-                    <>
-                      <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                      <span>Traitement...</span>
-                    </>
-                  ) : (
-                    <>
-                      <span>Obtenir mon Tarif & Réserver</span>
-                      <ArrowRight className="w-4 h-4" />
-                    </>
-                  )}
+                  <span>Obtenir mon Tarif & Réserver</span>
+                  <ArrowRight className="w-4 h-4" />
                 </button>
               </div>
             </form>
