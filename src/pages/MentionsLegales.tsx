@@ -27,7 +27,7 @@ const MentionsLegales = () => {
             <div className="bg-white rounded-xl p-6 shadow-sm space-y-3 font-light text-charcoal-light">
               <p><strong className="text-charcoal">Nom :</strong> Taxi Malacrida Aix-en-Provence</p>
               <p><strong className="text-charcoal">Activité :</strong> Transports de voyageurs par taxis</p>
-              <p><strong className="text-charcoal">SIRET :</strong> 539 197 046 00029</p>
+              <p><strong className="text-charcoal">SIRET :</strong> 884 511 346 00022</p>
               <p><strong className="text-charcoal">Code APE :</strong> 4932Z</p>
               <p><strong className="text-charcoal">Adresse postale :</strong> 18 avenue Henri Malacrida, 13100 Aix-en-Provence</p>
               <p><strong className="text-charcoal">Adresse d'exploitation :</strong> 14 avenue Cible, 13100 Aix-en-Provence</p>

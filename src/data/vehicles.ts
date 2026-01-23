@@ -31,9 +31,9 @@ export const vehicles: Vehicle[] = [
   {
     id: 1,
     title: "TESLA MODEL Y",
-    description: "Un silence absolu et un espace généreux pour 5 passagers. Profitez d'une expérience 100% électrique dans un habitacle moderne et lumineux, équipé des dernières technologies pour vos trajets urbains et interurbains.",
+    description: "Un silence absolu et un espace généreux pour 4 passagers. Profitez d'une expérience 100% électrique dans un habitacle moderne et lumineux, équipé des dernières technologies pour vos trajets urbains et interurbains.",
     image: "/images/tesla-yy-png.png",
-    passengers: "5",
+    passengers: "4",
     luggage: "3",
     features: [
       { icon: Volume2, label: "Silence total" },
@@ -65,7 +65,7 @@ export const vehicles: Vehicle[] = [
     title: "TESLA MODEL 3",
     description: "Berline sportive et raffinée offrant un confort optimal pour vos trajets d'affaires. Sièges ergonomiques, silence de roulage exceptionnel et design minimaliste pour une expérience de voyage zen et productive.",
     image: "/images/Tesla-3-png.png",
-    passengers: "5",
+    passengers: "4",
     luggage: "2",
     features: [
       { icon: Volume2, label: "Silence total" },

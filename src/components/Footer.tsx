@@ -108,7 +108,7 @@ const Footer = () => {
             </a>
           </div>
           <p className="text-xs font-light text-white/50">
-            SIRET : 539 197 046 00029 • APE : 4932Z
+            SIRET : 884 511 346 00022 • APE : 4932Z
           </p>
         </div>
       </div>
