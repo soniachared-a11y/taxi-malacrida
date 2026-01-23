@@ -1,5 +1,5 @@
 import { motion, useInView, AnimatePresence } from 'framer-motion';
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState } from 'react';
 import { Star, Plane, Briefcase, Heart, ChevronLeft, ChevronRight } from 'lucide-react';
 
 const ACCENT_BLUE = '#001F3F';
