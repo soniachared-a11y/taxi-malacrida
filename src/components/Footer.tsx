@@ -66,13 +66,6 @@ const Footer = () => {
                   <Phone className="w-4 h-4 text-white/50" />
                   07 84 62 86 40
                 </a>
-                <a 
-                  href="mailto:contact@taximalacrida.fr" 
-                  className="flex items-center justify-center md:justify-start gap-2 text-sm font-light text-white/70 hover:text-[#001F3F] transition-colors duration-300"
-                >
-                  <Mail className="w-4 h-4 text-white/50" />
-                  contact@taximalacrida.fr
-                </a>
               </div>
             </div>
 
