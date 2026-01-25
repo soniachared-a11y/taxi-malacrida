@@ -1,12 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
-
-// Import images localement
-import voitureEnRoute from '@/assets/services/voiture-en-route.jpg';
 import chauffeurJournee from '@/assets/services/chauffeur-journee.jpg';
-import shopping from '@/assets/services/shopping.jpg';
-import vieuxPortMarseille from '@/assets/services/vieux-port-marseille.jpg';
 import evenements from '@/assets/services/evenements.jpg';
-import gare from '@/assets/services/gare.jpg';
 
 const ACCENT_BLUE = '#001F3F';
 
@@ -14,7 +8,7 @@ const services = [
   {
     title: "Transferts Aéroports",
     description: "Marseille-Provence, Nice Côte d'Azur, Toulon Hyères. Ponctualité garantie avec suivi de vol en temps réel pour anticiper tout retard. Prise en charge directe au terminal, assistance bagages incluse. Votre chauffeur vous attend avec pancarte nominative pour un accueil personnalisé et serein.",
-    image: voitureEnRoute
+    image: "/assets/voiture-en-route.webp"
   },
   {
     title: "Service à la journée",
@@ -24,12 +18,12 @@ const services = [
   {
     title: "Shopping & Sorties",
     description: "Nos chauffeurs vous accompagnent avec élégance pour vos séances shopping dans les meilleures boutiques de la région. Attente sur place, aide au chargement de vos achats, discrétion absolue. Profitez également de nos services pour vos sorties restaurants, spectacles ou soirées entre amis en toute sérénité.",
-    image: shopping
+    image: "/assets/shopping.webp"
   },
   {
     title: "Tourisme PACA",
     description: "Marseille, Cassis, Aix-en-Provence, les calanques et la Côte d'Azur. Découvrez les trésors de la région Provence-Alpes-Côte d'Azur avec un chauffeur local passionné. Circuits personnalisés, arrêts photos aux meilleurs points de vue, recommandations authentiques. Explorez la Provence à votre rythme dans un confort optimal.",
-    image: vieuxPortMarseille
+    image: "/assets/vieux-port-marseille.webp"
   },
   {
     title: "Événements",
@@ -39,7 +33,7 @@ const services = [
   {
     title: "Transferts Gares",
     description: "TGV Aix-en-Provence, Marseille Saint-Charles, Avignon TGV. Prise en charge directe à quai avec assistance complète pour vos bagages. Suivi des horaires de train en temps réel pour s'adapter aux éventuels retards. Transfert fluide et sans stress vers votre destination finale dans la région.",
-    image: gare
+    image: "/assets/gare.webp"
   }
 ];
 

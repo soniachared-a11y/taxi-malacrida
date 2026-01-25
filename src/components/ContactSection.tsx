@@ -1,7 +1,6 @@
 import { motion, useInView } from 'framer-motion';
 import { useRef, useState, useEffect } from 'react';
 import { MapPin, Calendar, Clock, ArrowRight, Flag, Phone, Mail, MessageSquare, User } from 'lucide-react';
-import contactBgImage from '@/assets/contact-bg-tesla.jpg';
 import AddressInputWithSuggestions from '@/components/AddressInputWithSuggestions';
 import SimpleRouteMap from '@/components/SimpleRouteMap';
 
@@ -40,7 +39,7 @@ const ContactSection = () => {
       {/* Background Image */}
       <div 
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-        style={{ backgroundImage: `url(${contactBgImage})` }}
+        style={{ backgroundImage: 'url(/assets/contact-bg-tesla.webp)' }}
       />
       
       {/* Subtle Gradient Overlay - Only behind text area, image stays clear */}
