@@ -1,26 +1,34 @@
 import { motion } from 'framer-motion';
 import BookingForm from './BookingForm';
-import heroMobile from '@/assets/hero-mobile.jpg';
-
-const HERO_DESKTOP_URL = 'https://uqjftifudojfgfwfxxia.supabase.co/storage/v1/object/sign/image%20tesla/Section%20hero%20Taxi%20Malacrida%20%20(1).png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9lMmY3N2MyMi0wNDFkLTQ5YWQtODE3ZC04MDJiY2M4ODQ0OGUiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJpbWFnZSB0ZXNsYS9TZWN0aW9uIGhlcm8gVGF4aSBNYWxhY3JpZGEgICgxKS5wbmciLCJpYXQiOjE3Njg3NDEyMjMsImV4cCI6MTgwMDI3NzIyM30.cWkcMnO_d242lDDRk6Q3cO-aBUb6ZkUPz7V7CA3p3qg';
 
 const HeroSection = () => {
   return (
     <section id="hero" className="relative min-h-screen w-full overflow-visible bg-black">
-      {/* Mobile Background Image - Full visibility */}
-      <div className="absolute inset-0 md:hidden">
-        <img 
-          src={heroMobile}
-          alt="Taxi Malacrida Hero"
-          className="w-full h-full object-cover object-top"
-        />
+      {/* Responsive Background Image - WebP Optimized */}
+      <div className="absolute inset-0">
+        <picture>
+          {/* Mobile: taxi-aix-en-provence-tesla-mobile.webp */}
+          <source 
+            media="(max-width: 767px)" 
+            srcSet="/assets/taxi-aix-en-provence-tesla-mobile.webp"
+            type="image/webp"
+          />
+          {/* Desktop: taxi-aix-en-provence-tesla-desktop.webp */}
+          <source 
+            media="(min-width: 768px)" 
+            srcSet="/assets/taxi-aix-en-provence-tesla-desktop.webp"
+            type="image/webp"
+          />
+          {/* Fallback img */}
+          <img 
+            src="/assets/taxi-aix-en-provence-tesla-mobile.webp"
+            alt="Chauffeur privé VTC Tesla à Aix-en-Provence"
+            className="w-full h-full object-cover object-top md:object-center"
+            fetchPriority="high"
+            loading="eager"
+          />
+        </picture>
       </div>
-      
-      {/* Desktop Background Image */}
-      <div 
-        className="absolute inset-0 bg-cover bg-center hidden md:block"
-        style={{ backgroundImage: `url('${HERO_DESKTOP_URL}')` }}
-      />
       
       {/* Dark Overlay - Premium opacity */}
       <div className="absolute inset-0 bg-black/50" />
