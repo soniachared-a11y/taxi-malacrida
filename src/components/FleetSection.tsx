@@ -61,7 +61,11 @@ const FleetSection = () => {
               <img
                 src={teslaExterior}
                 alt="Tesla Model Y 2025"
+                width={800}
+                height={400}
                 className="w-full h-[280px] md:h-[350px] lg:h-[400px] object-cover"
+                loading="lazy"
+                decoding="async"
               />
               <div className="img-overlay" />
               <div className="absolute bottom-0 left-0 right-0 p-4 md:p-6 lg:p-8">
@@ -104,7 +108,11 @@ const FleetSection = () => {
               <img
                 src={teslaInterior}
                 alt="Intérieur Tesla Model Y"
+                width={600}
+                height={192}
                 className="w-full h-32 md:h-40 lg:h-48 object-cover"
+                loading="lazy"
+                decoding="async"
               />
             </div>
 

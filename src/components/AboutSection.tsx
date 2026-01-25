@@ -65,17 +65,29 @@ const AboutSection = () => {
               <img
                 src={clientHappy1}
                 alt="Cliente satisfaite"
+                width={64}
+                height={64}
                 className="w-14 h-14 md:w-16 md:h-16 rounded-full object-cover avatar-ring"
+                loading="lazy"
+                decoding="async"
               />
               <img
                 src={clientHappy2}
                 alt="Client satisfait"
+                width={64}
+                height={64}
                 className="w-14 h-14 md:w-16 md:h-16 rounded-full object-cover avatar-ring"
+                loading="lazy"
+                decoding="async"
               />
               <img
                 src={clientHappy3}
                 alt="Clients satisfaits"
+                width={64}
+                height={64}
                 className="w-14 h-14 md:w-16 md:h-16 rounded-full object-cover avatar-ring"
+                loading="lazy"
+                decoding="async"
               />
             </div>
             <div className="text-left">

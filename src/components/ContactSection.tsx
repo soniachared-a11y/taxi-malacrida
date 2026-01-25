@@ -176,12 +176,13 @@ const ContactSection = () => {
                 {/* Date & Time */}
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-xs font-medium text-gray-500 mb-1">
+                    <label htmlFor="reservation-date" className="block text-xs font-medium text-gray-500 mb-1">
                       Date
                     </label>
                     <div className="relative">
                       <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                       <input
+                        id="reservation-date"
                         type="date"
                         name="date"
                         required
@@ -190,12 +191,13 @@ const ContactSection = () => {
                     </div>
                   </div>
                   <div>
-                    <label className="block text-xs font-medium text-gray-500 mb-1">
+                    <label htmlFor="reservation-time" className="block text-xs font-medium text-gray-500 mb-1">
                       Heure
                     </label>
                     <div className="relative">
                       <Clock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                       <input
+                        id="reservation-time"
                         type="time"
                         name="time"
                         required
@@ -207,12 +209,13 @@ const ContactSection = () => {
 
                 {/* Nom */}
                 <div>
-                  <label className="block text-xs font-medium text-gray-500 mb-1">
+                  <label htmlFor="reservation-nom" className="block text-xs font-medium text-gray-500 mb-1">
                     Nom complet
                   </label>
                   <div className="relative">
                     <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                     <input
+                      id="reservation-nom"
                       type="text"
                       name="nom"
                       value={nom}
@@ -226,12 +229,13 @@ const ContactSection = () => {
 
                 {/* Téléphone */}
                 <div>
-                  <label className="block text-xs font-medium text-gray-500 mb-1">
+                  <label htmlFor="reservation-telephone" className="block text-xs font-medium text-gray-500 mb-1">
                     Téléphone
                   </label>
                   <div className="relative">
                     <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                     <input
+                      id="reservation-telephone"
                       type="tel"
                       name="telephone"
                       value={telephone}
@@ -245,12 +249,13 @@ const ContactSection = () => {
 
                 {/* Email */}
                 <div>
-                  <label className="block text-xs font-medium text-gray-500 mb-1">
+                  <label htmlFor="reservation-email" className="block text-xs font-medium text-gray-500 mb-1">
                     Email
                   </label>
                   <div className="relative">
                     <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                     <input
+                      id="reservation-email"
                       type="email"
                       name="email"
                       value={email}
@@ -264,12 +269,13 @@ const ContactSection = () => {
 
                 {/* Message */}
                 <div>
-                  <label className="block text-xs font-medium text-gray-500 mb-1">
+                  <label htmlFor="reservation-message" className="block text-xs font-medium text-gray-500 mb-1">
                     Message ou précisions <span className="text-gray-400">(optionnel)</span>
                   </label>
                   <div className="relative">
                     <MessageSquare className="absolute left-3 top-3 w-4 h-4 text-gray-400" />
                     <textarea
+                      id="reservation-message"
                       name="message"
                       value={message}
                       onChange={(e) => setMessage(e.target.value)}

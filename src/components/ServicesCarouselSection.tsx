@@ -155,7 +155,6 @@ export default function ServicesCarouselSection() {
                 background: '#000000',
                 height: isMobile ? '520px' : '600px',
                 width: isMobile ? '100%' : 'calc(50% - 12px)',
-                minWidth: isMobile ? '100%' : 'calc(50% - 12px)',
                 touchAction: 'pan-x pan-y' // Permet swipe horizontal ET scroll vertical
               }}
             >
@@ -169,7 +168,11 @@ export default function ServicesCarouselSection() {
                 <img
                   src={service.image}
                   alt={service.title}
+                  width={isMobile ? 400 : 600}
+                  height={isMobile ? 280 : 360}
                   className="w-full h-full object-cover"
+                  loading="lazy"
+                  decoding="async"
                   draggable={false}
                 />
               </div>

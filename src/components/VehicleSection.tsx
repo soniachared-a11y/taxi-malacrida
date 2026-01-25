@@ -77,8 +77,12 @@ const VehicleSection = () => {
           <img 
             src="https://uqjftifudojfgfwfxxia.supabase.co/storage/v1/object/sign/image%20tesla/Image_model_tesla_y_-removebg-preview%20(1).png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9lMmY3N2MyMi0wNDFkLTQ5YWQtODE3ZC04MDJiY2M4ODQ0OGUiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJpbWFnZSB0ZXNsYS9JbWFnZV9tb2RlbF90ZXNsYV95Xy1yZW1vdmViZy1wcmV2aWV3ICgxKS5wbmciLCJpYXQiOjE3Njg3NDA3NTUsImV4cCI6MTgwMDI3Njc1NX0.0NCbznvHI12M4FFgf9wH_MLlGH7szj0tx-xkggUuxQo"
             alt="Tesla Model Y"
+            width={600}
+            height={400}
             className="w-full h-auto"
             style={{ maxWidth: '600px' }}
+            loading="lazy"
+            decoding="async"
           />
         </motion.div>
         

@@ -379,8 +379,11 @@ export default function VehicleCarousel() {
             <img 
               src={current.image} 
               alt={current.title}
+              width={750}
+              height={500}
               className="w-auto max-w-[280px] md:max-w-[450px] lg:max-w-[600px] xl:max-w-[750px] h-auto"
               loading="lazy"
+              decoding="async"
               style={{ 
                 willChange: 'transform',
                 objectFit: 'contain',

@@ -25,7 +25,11 @@ const Footer = () => {
               <img 
                 src={logoTaxiMalacrida} 
                 alt="Taxi Malacrida" 
+                width={120}
+                height={112}
                 className="h-24 md:h-28 w-auto object-contain mx-auto lg:mx-0"
+                loading="lazy"
+                decoding="async"
               />
             </a>
           </div>

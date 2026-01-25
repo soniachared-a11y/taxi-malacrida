@@ -149,7 +149,11 @@ const TestimonialsSection = () => {
                   <img
                     src={testimonials[current].image}
                     alt={testimonials[current].name}
+                    width={96}
+                    height={96}
                     className="w-20 h-20 md:w-24 md:h-24 rounded-full object-cover border-3 border-[#001F3F]/20 shadow-md"
+                    loading="lazy"
+                    decoding="async"
                   />
                 </div>
 

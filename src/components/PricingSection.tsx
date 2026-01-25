@@ -19,7 +19,11 @@ const PricingSection = () => {
           <img
             src={pricingSplitImage}
             alt="Tesla Model Y - Tarification claire et fixe"
+            width={400}
+            height={288}
             className="w-full h-full object-cover"
+            loading="lazy"
+            decoding="async"
           />
         </div>
 
@@ -89,7 +93,11 @@ const PricingSection = () => {
           <img
             src={pricingSplitImage}
             alt="Tesla Model Y - Tarification claire et fixe"
+            width={800}
+            height={640}
             className="w-full h-full object-cover md:rounded-l-2xl"
+            loading="lazy"
+            decoding="async"
           />
         </motion.div>
       </div>

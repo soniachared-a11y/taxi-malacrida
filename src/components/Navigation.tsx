@@ -36,7 +36,11 @@ const Navigation = () => {
             <img 
               src={logoTaxiMalacrida} 
               alt="Taxi Malacrida" 
+              width={120}
+              height={56}
               className="h-12 md:h-14 w-auto object-contain"
+              loading="lazy"
+              decoding="async"
             />
           </a>
 
