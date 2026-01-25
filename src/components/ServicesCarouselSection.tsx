@@ -1,5 +1,4 @@
 import { useState, useEffect, useRef } from 'react';
-import chauffeurJournee from '@/assets/services/chauffeur-journee.jpg';
 import evenements from '@/assets/services/evenements.jpg';
 
 const ACCENT_BLUE = '#001F3F';
@@ -13,7 +12,7 @@ const services = [
   {
     title: "Service à la journée",
     description: "Bénéficiez d'un chauffeur privé dédié pour la journée entière, idéal pour vos rendez-vous professionnels ou vos activités personnelles. Flexibilité totale sur les horaires et les destinations. Véhicule à disposition permanente, pauses comprises. Solution parfaite pour les journées chargées nécessitant plusieurs déplacements.",
-    image: chauffeurJournee
+    image: "/assets/chauffeur-journee.webp"
   },
   {
     title: "Shopping & Sorties",
