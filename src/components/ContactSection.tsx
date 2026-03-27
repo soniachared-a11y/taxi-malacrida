@@ -5,7 +5,6 @@ import AddressInputWithSuggestions from '@/components/AddressInputWithSuggestion
 import SimpleRouteMap from '@/components/SimpleRouteMap';
 
 const ACCENT_BLUE = '#001F3F';
-
 const ContactSection = () => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: '-50px' });
@@ -101,7 +100,7 @@ const ContactSection = () => {
               <input type="hidden" name="_subject" value="🚖 Nouvelle Réservation TAXI" />
               <input type="hidden" name="_captcha" value="false" />
               <input type="hidden" name="_template" value="table" />
-              <input type="hidden" name="_next" value="https://taximalacrida.com/merci" />
+              <input type="hidden" name="_next" value="https://www.taximalacrida.fr/merci" />
 
               <h3 
                 className="font-serif text-lg md:text-xl mb-3 md:mb-4 text-center"
