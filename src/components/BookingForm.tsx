@@ -97,15 +97,17 @@ const BookingForm = () => {
       dateHeure.setHours(parseInt(hours), parseInt(minutes));
 
       const reservationData: Reservation = {
+        nom_client: data.nom,
+        tel_client: data.telephone,
         depart: data.depart,
-        arrivee: data.arrivee,
+        destination: data.arrivee,
         date_heure: dateHeure.toISOString(),
-        nom: data.nom,
-        telephone: data.telephone,
-        email: data.email,
-        distance_km: quote.distance_km,
-        prix_euros: quote.prix_euros,
-        message: data.message || '',
+        montant: quote.prix_euros,
+        message: [data.message, `Email: ${data.email}`, `Distance: ${quote.distance_km}km`].filter(Boolean).join(' | '),
+        marque: 'malacrida',
+        source: 'site',
+        statut: 'nouvelle',
+        user_id: null,
       };
 
       // Save to Supabase
