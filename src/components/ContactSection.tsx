@@ -3,6 +3,7 @@ import { useRef, useState, useEffect } from 'react';
 import { MapPin, Calendar, Clock, ArrowRight, Flag, Phone, Mail, MessageSquare, User } from 'lucide-react';
 import AddressInputWithSuggestions from '@/components/AddressInputWithSuggestions';
 import SimpleRouteMap from '@/components/SimpleRouteMap';
+import { supabase } from '@/lib/supabase';
 
 const ACCENT_BLUE = '#001F3F';
 const ContactSection = () => {
@@ -90,11 +91,34 @@ const ContactSection = () => {
             className="lg:col-span-3 relative"
             style={{ zIndex: 1 }}
           >
-            <form 
+            <form
               action="https://formsubmit.co/ouerfelli.yassino@gmail.com"
               method="POST"
               className="bg-white rounded-xl shadow-xl p-4 md:p-5 relative"
               style={{ boxShadow: '0 15px 40px rgba(0,0,0,0.25)' }}
+              onSubmit={async (e) => {
+                // Insert in Supabase before HTML form submits
+                const form = e.currentTarget;
+                const dateVal = (form.querySelector('[name="date"]') as HTMLInputElement)?.value;
+                const timeVal = (form.querySelector('[name="time"]') as HTMLInputElement)?.value;
+                let date_heure: string | null = null;
+                if (dateVal && timeVal) {
+                  const d = new Date(`${dateVal}T${timeVal}`);
+                  if (!isNaN(d.getTime())) date_heure = d.toISOString();
+                }
+                await supabase.from('reservations').insert({
+                  nom_client: nom || null,
+                  tel_client: telephone || null,
+                  depart: departure || null,
+                  destination: arrival || null,
+                  date_heure,
+                  message: message || null,
+                  marque: 'malacrida',
+                  source: 'site',
+                  statut: 'nouvelle',
+                  user_id: null,
+                });
+              }}
             >
               {/* FormSubmit hidden fields */}
               <input type="hidden" name="_subject" value="🚖 Nouvelle Réservation TAXI" />
