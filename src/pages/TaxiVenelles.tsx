@@ -77,6 +77,8 @@ const FAQ_SCHEMA = {
 const TaxiVenelles = () => {
   useEffect(() => {
     document.title = 'Taxi Venelles | Malacrida — Aéroport Marseille, Gare TGV, Aix-en-Provence';
+    document.querySelector('link[rel="canonical"]')?.setAttribute('href', 'https://www.taximalacrida.fr/taxi-venelles');
+    document.querySelector('meta[name="description"]')?.setAttribute('content', "Taxi et VTC à Venelles, commune résidentielle au nord d'Aix-en-Provence. Transferts vers l'Aéroport Marseille-Provence, la Gare TGV d'Aix, Marseille. Chauffeur Tesla 24h/24, tarif fixe garanti.");
 
     const s1 = document.createElement('script');
     s1.type = 'application/ld+json'; s1.id = 'schema-venelles-business';
@@ -94,6 +96,8 @@ const TaxiVenelles = () => {
     document.head.appendChild(s3);
 
     return () => {
+      document.querySelector('link[rel="canonical"]')?.setAttribute('href', 'https://www.taximalacrida.fr/');
+      document.querySelector('meta[name="description"]')?.setAttribute('content', "Réservez votre chauffeur Taxi Malacrida à Aix-en-Provence et alentours. Transferts Gare TGV, Aéroport Marseille et toutes distances. Disponible 24/7.");
       document.getElementById('schema-venelles-business')?.remove();
       document.getElementById('schema-venelles-faq')?.remove();
       document.getElementById('schema-venelles-breadcrumb')?.remove();

@@ -84,6 +84,8 @@ const FAQ_SCHEMA = {
 const TaxiGareTGVAix = () => {
   useEffect(() => {
     document.title = 'Taxi Gare TGV Aix-en-Provence | Malacrida — Tarif fixe dès 35€, 24h/24';
+    document.querySelector('link[rel="canonical"]')?.setAttribute('href', 'https://www.taximalacrida.fr/taxi-gare-tgv-aix');
+    document.querySelector('meta[name="description"]')?.setAttribute('content', "Taxi et VTC pour la Gare TGV d'Aix-en-Provence. Prise en charge depuis Aix-en-Provence, Marseille, Vitrolles, Pertuis. Chauffeur Tesla 24h/24, tarif fixe dès 35€, ponctualité garantie.");
 
     const scriptBusiness = document.createElement('script');
     scriptBusiness.type = 'application/ld+json';
@@ -104,6 +106,8 @@ const TaxiGareTGVAix = () => {
     document.head.appendChild(scriptBreadcrumb);
 
     return () => {
+      document.querySelector('link[rel="canonical"]')?.setAttribute('href', 'https://www.taximalacrida.fr/');
+      document.querySelector('meta[name="description"]')?.setAttribute('content', "Réservez votre chauffeur Taxi Malacrida à Aix-en-Provence et alentours. Transferts Gare TGV, Aéroport Marseille et toutes distances. Disponible 24/7.");
       document.getElementById('schema-garetgv-business')?.remove();
       document.getElementById('schema-garetgv-faq')?.remove();
       document.getElementById('schema-garetgv-breadcrumb')?.remove();

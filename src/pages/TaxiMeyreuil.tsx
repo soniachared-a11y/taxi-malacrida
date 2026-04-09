@@ -71,6 +71,8 @@ const FAQ_SCHEMA = {
 const TaxiMeyreuil = () => {
   useEffect(() => {
     document.title = 'Taxi Meyreuil | Malacrida — Aéroport Marseille, Gare TGV, Aix-en-Provence';
+    document.querySelector('link[rel="canonical"]')?.setAttribute('href', 'https://www.taximalacrida.fr/taxi-meyreuil');
+    document.querySelector('meta[name="description"]')?.setAttribute('content', "Taxi et VTC à Meyreuil, commune proche d'Aix-en-Provence. Transferts vers l'Aéroport Marseille-Provence, la Gare TGV, Marseille. Chauffeur Tesla 24h/24, tarif fixe garanti.");
 
     const s1 = document.createElement('script');
     s1.type = 'application/ld+json'; s1.id = 'schema-meyreuil-business';
@@ -88,6 +90,8 @@ const TaxiMeyreuil = () => {
     document.head.appendChild(s3);
 
     return () => {
+      document.querySelector('link[rel="canonical"]')?.setAttribute('href', 'https://www.taximalacrida.fr/');
+      document.querySelector('meta[name="description"]')?.setAttribute('content', "Réservez votre chauffeur Taxi Malacrida à Aix-en-Provence et alentours. Transferts Gare TGV, Aéroport Marseille et toutes distances. Disponible 24/7.");
       document.getElementById('schema-meyreuil-business')?.remove();
       document.getElementById('schema-meyreuil-faq')?.remove();
       document.getElementById('schema-meyreuil-breadcrumb')?.remove();

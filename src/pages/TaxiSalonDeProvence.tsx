@@ -76,6 +76,8 @@ const FAQ_SCHEMA = {
 const TaxiSalonDeProvence = () => {
   useEffect(() => {
     document.title = 'Taxi Salon-de-Provence | Malacrida — Aéroport Marseille, Gare TGV, 24h/24';
+    document.querySelector('link[rel="canonical"]')?.setAttribute('href', 'https://www.taximalacrida.fr/taxi-salon-de-provence');
+    document.querySelector('meta[name="description"]')?.setAttribute('content', "Taxi et VTC à Salon-de-Provence. Transferts longue distance vers l'Aéroport Marseille-Provence, la Gare TGV d'Aix-en-Provence, Marseille. Chauffeur Tesla 24h/24, tarif fixe garanti sur devis.");
 
     const s1 = document.createElement('script');
     s1.type = 'application/ld+json'; s1.id = 'schema-salon-business';
@@ -93,6 +95,8 @@ const TaxiSalonDeProvence = () => {
     document.head.appendChild(s3);
 
     return () => {
+      document.querySelector('link[rel="canonical"]')?.setAttribute('href', 'https://www.taximalacrida.fr/');
+      document.querySelector('meta[name="description"]')?.setAttribute('content', "Réservez votre chauffeur Taxi Malacrida à Aix-en-Provence et alentours. Transferts Gare TGV, Aéroport Marseille et toutes distances. Disponible 24/7.");
       document.getElementById('schema-salon-business')?.remove();
       document.getElementById('schema-salon-faq')?.remove();
       document.getElementById('schema-salon-breadcrumb')?.remove();

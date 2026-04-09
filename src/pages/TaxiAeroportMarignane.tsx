@@ -84,6 +84,8 @@ const TaxiAeroportMarignane = () => {
   useEffect(() => {
     // Titre de la page
     document.title = 'Taxi Aéroport Marseille-Provence (Marignane) | Malacrida — Tarif fixe 50€, 24h/24';
+    document.querySelector('link[rel="canonical"]')?.setAttribute('href', 'https://www.taximalacrida.fr/taxi-aeroport-marignane');
+    document.querySelector('meta[name="description"]')?.setAttribute('content', "Service de taxi et VTC depuis Aix-en-Provence vers l'Aéroport Marseille-Provence de Marignane. Chauffeur Tesla 24h/24, tarif fixe 50€, suivi des vols en temps réel, accueil avec panneau nominatif au Hall des arrivées.");
 
     // Injection Schema.org
     const scriptBusiness = document.createElement('script');
@@ -105,6 +107,8 @@ const TaxiAeroportMarignane = () => {
     document.head.appendChild(scriptBreadcrumb);
 
     return () => {
+      document.querySelector('link[rel="canonical"]')?.setAttribute('href', 'https://www.taximalacrida.fr/');
+      document.querySelector('meta[name="description"]')?.setAttribute('content', 'Réservez votre chauffeur Taxi Malacrida à Aix-en-Provence et alentours. Transferts Gare TGV, Aéroport Marseille et toutes distances. Disponible 24/7.');
       document.getElementById('schema-aeroport-business')?.remove();
       document.getElementById('schema-aeroport-faq')?.remove();
       document.getElementById('schema-aeroport-breadcrumb')?.remove();

@@ -217,7 +217,7 @@ const TestimonialsSection = () => {
           {/* CTA Déposer un avis */}
           <div className="text-center mt-8">
             <a
-              href="https://www.google.com/maps?q=Taxi+Malacrida#lrd=0x12c98d00457ee0a5:0x7e5bba47d87860cc,1"
+              href="https://search.google.com/local/writereview?placeid=ChIJpeB-RQCNyRIRzGB42Ee6W34"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 px-6 py-3 bg-[#001F3F] text-white rounded-full font-medium hover:bg-[#001F3F]/90 transition-colors"

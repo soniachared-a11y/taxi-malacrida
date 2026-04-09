@@ -77,6 +77,8 @@ const FAQ_SCHEMA = {
 const TaxiGareSaintCharles = () => {
   useEffect(() => {
     document.title = 'Taxi Gare Saint-Charles Marseille | Malacrida — Depuis Aix-en-Provence, tarif 55€';
+    document.querySelector('link[rel="canonical"]')?.setAttribute('href', 'https://www.taximalacrida.fr/taxi-gare-saint-charles');
+    document.querySelector('meta[name="description"]')?.setAttribute('content', "Taxi et VTC entre Aix-en-Provence et la Gare Saint-Charles de Marseille. Chauffeur Tesla 24h/24, tarif fixe 55€, prise en charge à domicile, pas de supplément nuit.");
 
     const s1 = document.createElement('script');
     s1.type = 'application/ld+json'; s1.id = 'schema-stcharles-business';
@@ -94,6 +96,8 @@ const TaxiGareSaintCharles = () => {
     document.head.appendChild(s3);
 
     return () => {
+      document.querySelector('link[rel="canonical"]')?.setAttribute('href', 'https://www.taximalacrida.fr/');
+      document.querySelector('meta[name="description"]')?.setAttribute('content', "Réservez votre chauffeur Taxi Malacrida à Aix-en-Provence et alentours. Transferts Gare TGV, Aéroport Marseille et toutes distances. Disponible 24/7.");
       document.getElementById('schema-stcharles-business')?.remove();
       document.getElementById('schema-stcharles-faq')?.remove();
       document.getElementById('schema-stcharles-breadcrumb')?.remove();

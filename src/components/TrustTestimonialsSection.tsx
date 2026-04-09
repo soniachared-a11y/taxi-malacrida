@@ -306,7 +306,25 @@ const TrustTestimonialsSection = () => {
           </div>
         </motion.div>
 
-        {/* 5. SÉPARATEUR FIN DE SECTION */}
+        {/* 5. CTA DÉPOSER UN AVIS */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.8, delay: 0.8 }}
+          className="flex justify-center mb-6 md:mb-8"
+        >
+          <a
+            href="https://search.google.com/local/writereview?placeid=ChIJpeB-RQCNyRIRzGB42Ee6W34"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-full font-medium text-sm transition-colors"
+            style={{ backgroundColor: ACCENT_BLUE, color: '#fff' }}
+          >
+            ★ Déposer un avis Google
+          </a>
+        </motion.div>
+
+        {/* 6. SÉPARATEUR FIN DE SECTION */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={isInView ? { opacity: 1 } : {}}

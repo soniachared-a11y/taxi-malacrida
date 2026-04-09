@@ -77,6 +77,8 @@ const FAQ_SCHEMA = {
 const TaxiGardanne = () => {
   useEffect(() => {
     document.title = 'Taxi Gardanne | Malacrida — Aéroport Marseille, Gare TGV, Aix-en-Provence';
+    document.querySelector('link[rel="canonical"]')?.setAttribute('href', 'https://www.taximalacrida.fr/taxi-gardanne');
+    document.querySelector('meta[name="description"]')?.setAttribute('content', "Taxi et VTC à Gardanne. Transferts vers l'Aéroport Marseille-Provence, la Gare TGV Aix-en-Provence, Marseille et toute la région PACA. Chauffeur Tesla 24h/24, tarif fixe garanti, aucun supplément.");
 
     const s1 = document.createElement('script');
     s1.type = 'application/ld+json'; s1.id = 'schema-gardanne-business';
@@ -94,6 +96,8 @@ const TaxiGardanne = () => {
     document.head.appendChild(s3);
 
     return () => {
+      document.querySelector('link[rel="canonical"]')?.setAttribute('href', 'https://www.taximalacrida.fr/');
+      document.querySelector('meta[name="description"]')?.setAttribute('content', "Réservez votre chauffeur Taxi Malacrida à Aix-en-Provence et alentours. Transferts Gare TGV, Aéroport Marseille et toutes distances. Disponible 24/7.");
       document.getElementById('schema-gardanne-business')?.remove();
       document.getElementById('schema-gardanne-faq')?.remove();
       document.getElementById('schema-gardanne-breadcrumb')?.remove();

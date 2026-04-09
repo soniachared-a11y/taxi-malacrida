@@ -11,7 +11,7 @@ const SCHEMA_LOCAL = {
   "name": "Taxi Malacrida — Vitrolles",
   "description": "Service de taxi et VTC à Vitrolles 24h/24 : transferts aéroport Marseille-Provence, Aix-en-Provence, gares et hôpitaux. Véhicule Tesla, tarifs fixes.",
   "url": "https://www.taximalacrida.fr/taxi-vitrolles",
-  "telephone": "+33600000000",
+  "telephone": "+33784628640",
   "address": {
     "@type": "PostalAddress",
     "addressLocality": "Vitrolles",
