@@ -1,9 +1,11 @@
 import { motion, useInView } from 'framer-motion';
 import { useRef, useState, useEffect } from 'react';
-import { MapPin, Calendar, Clock, ArrowRight, Flag, Phone, Mail, MessageSquare, User } from 'lucide-react';
+import { MapPin, Calendar, Clock, ArrowRight, Flag, Phone, Mail, MessageSquare, User, Loader2 } from 'lucide-react';
+import { format } from 'date-fns';
+import { fr } from 'date-fns/locale';
 import AddressInputWithSuggestions from '@/components/AddressInputWithSuggestions';
 import SimpleRouteMap from '@/components/SimpleRouteMap';
-import { supabase } from '@/lib/supabase';
+import { sendReservation } from '@/lib/sendReservation';
 
 const ACCENT_BLUE = '#001F3F';
 const ContactSection = () => {
@@ -15,6 +17,8 @@ const ContactSection = () => {
   const [telephone, setTelephone] = useState('');
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState('');
 
   // Listen for pre-fill event from Hero form
   useEffect(() => {
@@ -92,39 +96,55 @@ const ContactSection = () => {
             style={{ zIndex: 1 }}
           >
             <form
-              action="https://formsubmit.co/ouerfelli.yassino@gmail.com"
-              method="POST"
               className="bg-white rounded-xl shadow-xl p-4 md:p-5 relative"
               style={{ boxShadow: '0 15px 40px rgba(0,0,0,0.25)' }}
               onSubmit={async (e) => {
-                // Insert in Supabase before HTML form submits
+                // Bloque la soumission HTML native pour garantir que sendReservation
+                // s'exécute entièrement avant toute redirection (fix race condition)
+                e.preventDefault();
+                if (submitting) return;
+
                 const form = e.currentTarget;
                 const dateVal = (form.querySelector('[name="date"]') as HTMLInputElement)?.value;
                 const timeVal = (form.querySelector('[name="time"]') as HTMLInputElement)?.value;
-                let date_heure: string | null = null;
+
+                let dateHeureIso = '';
+                let dateHeureLisible = '—';
                 if (dateVal && timeVal) {
                   const d = new Date(`${dateVal}T${timeVal}`);
-                  if (!isNaN(d.getTime())) date_heure = d.toISOString();
+                  if (!isNaN(d.getTime())) {
+                    dateHeureIso = d.toISOString();
+                    dateHeureLisible = format(d, "dd/MM/yyyy 'à' HH:mm", { locale: fr });
+                  }
+                } else if (dateVal) {
+                  dateHeureLisible = dateVal;
                 }
-                await supabase.from('reservations').insert({
-                  nom_client: nom || null,
-                  tel_client: telephone || null,
-                  depart: departure || null,
-                  destination: arrival || null,
-                  date_heure,
-                  message: message || null,
+
+                setSubmitting(true);
+                setSubmitError('');
+
+                const result = await sendReservation({
+                  nom,
+                  telephone,
+                  email,
+                  depart: departure,
+                  arrivee: arrival,
+                  dateHeure: dateHeureIso,
+                  dateHeureLisible,
+                  message,
                   marque: 'malacrida',
-                  source: 'site',
-                  statut: 'nouvelle',
-                  user_id: null,
+                  driverEmail: 'ouerfelli.yassino@gmail.com',
+                  source: 'site-contact',
                 });
+
+                if (result.ok) {
+                  window.location.href = '/merci';
+                } else {
+                  setSubmitting(false);
+                  setSubmitError('Connexion impossible. Merci de nous appeler au 07 84 62 86 40.');
+                }
               }}
             >
-              {/* FormSubmit hidden fields */}
-              <input type="hidden" name="_subject" value="🚖 Nouvelle Réservation TAXI" />
-              <input type="hidden" name="_captcha" value="false" />
-              <input type="hidden" name="_template" value="table" />
-              <input type="hidden" name="_next" value="https://www.taximalacrida.fr/merci" />
 
               <h3 
                 className="font-serif text-lg md:text-xl mb-3 md:mb-4 text-center"
@@ -309,23 +329,40 @@ const ContactSection = () => {
                   </div>
                 </div>
 
+                {/* Message d'erreur si tous les canaux ont échoué */}
+                {submitError && (
+                  <div className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">
+                    {submitError}
+                  </div>
+                )}
+
                 {/* CTA Button */}
                 <button
                   type="submit"
-                  className="w-full py-2.5 md:py-3 rounded-lg text-white font-medium text-sm tracking-wide transition-all duration-300 flex items-center justify-center gap-2 hover:shadow-lg hover:-translate-y-0.5 mt-2"
-                  style={{ 
+                  disabled={submitting}
+                  className="w-full py-2.5 md:py-3 rounded-lg text-white font-medium text-sm tracking-wide transition-all duration-300 flex items-center justify-center gap-2 hover:shadow-lg hover:-translate-y-0.5 mt-2 disabled:opacity-70 disabled:cursor-wait disabled:hover:translate-y-0"
+                  style={{
                     backgroundColor: ACCENT_BLUE,
                     boxShadow: '0 4px 14px rgba(14,77,100,0.3)'
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.backgroundColor = '#0a3d50';
+                    if (!submitting) e.currentTarget.style.backgroundColor = '#0a3d50';
                   }}
                   onMouseLeave={(e) => {
                     e.currentTarget.style.backgroundColor = ACCENT_BLUE;
                   }}
                 >
-                  <span>Obtenir mon Tarif & Réserver</span>
-                  <ArrowRight className="w-4 h-4" />
+                  {submitting ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      <span>Envoi en cours…</span>
+                    </>
+                  ) : (
+                    <>
+                      <span>Obtenir mon Tarif & Réserver</span>
+                      <ArrowRight className="w-4 h-4" />
+                    </>
+                  )}
                 </button>
               </div>
             </form>

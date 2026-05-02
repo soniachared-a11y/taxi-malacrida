@@ -10,9 +10,8 @@ import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { supabase, type Reservation } from '@/lib/supabase';
 import { calculateRoute } from '@/lib/routing';
-import { sendTelegramNotification } from '@/lib/telegram';
+import { sendReservation } from '@/lib/sendReservation';
 
 // Validation schema
 const bookingSchema = z.object({
@@ -96,40 +95,32 @@ const BookingForm = () => {
       const [hours, minutes] = data.heure.split(':');
       dateHeure.setHours(parseInt(hours), parseInt(minutes));
 
-      const reservationData: Reservation = {
-        nom_client: data.nom,
-        tel_client: data.telephone,
+      // Triple sécu : Supabase + EmailJS + WhatsApp en parallèle
+      const result = await sendReservation({
+        nom: data.nom,
+        telephone: data.telephone,
+        email: data.email,
         depart: data.depart,
-        destination: data.arrivee,
-        date_heure: dateHeure.toISOString(),
-        montant: quote.prix_euros,
-        message: [data.message, `Email: ${data.email}`, `Distance: ${quote.distance_km}km`].filter(Boolean).join(' | '),
-        marque: 'malacrida',
-        source: 'site',
-        statut: 'nouvelle',
-        user_id: null,
-      };
-
-      // Save to Supabase
-      const { error: dbError } = await supabase
-        .from('reservations')
-        .insert(reservationData);
-
-      if (dbError) {
-        console.error('Erreur Supabase:', dbError);
-        throw new Error('Erreur lors de l\'enregistrement');
-      }
-
-      // Send Telegram notification
-      await sendTelegramNotification({
-        ...reservationData,
-        date_heure: format(dateHeure, "dd/MM/yyyy 'à' HH:mm", { locale: fr }),
-        distance_km: quote.distance_km,
-        prix_euros: quote.prix_euros,
+        arrivee: data.arrivee,
+        dateHeure: dateHeure.toISOString(),
+        dateHeureLisible: format(dateHeure, "dd/MM/yyyy 'à' HH:mm", { locale: fr }),
+        prix: quote.prix_euros,
+        distanceKm: quote.distance_km,
         message: data.message || '',
+        marque: 'malacrida',
+        driverEmail: 'ouerfelli.yassino@gmail.com',
+        source: 'site-hero',
       });
 
-      setStep('success');
+      // Au moins un canal a réussi → réservation prise en compte
+      if (result.ok) {
+        setStep('success');
+      } else {
+        // Tous les canaux ont échoué : on garde l'erreur visible pour le client
+        console.error('[BookingForm] Tous les canaux ont échoué', result.channels);
+        setErrorMessage('Connexion impossible. Veuillez nous appeler au 07 84 62 86 40.');
+        setStep('error');
+      }
     } catch (error) {
       console.error('Erreur réservation:', error);
       setErrorMessage('Une erreur est survenue. Veuillez réessayer ou nous appeler.');
