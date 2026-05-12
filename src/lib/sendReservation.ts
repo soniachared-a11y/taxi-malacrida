@@ -88,9 +88,10 @@ async function sendToEmail(data: ReservationInput): Promise<ChannelResult> {
     //   1. Le subject EST poussé en variable (si le template a {{subject}}, override)
     //   2. La 1ère ligne du message dit clairement « MALACRIDA TAXI » pour
     //      éliminer toute ambiguïté visuelle dans le corps de l'email.
-    const brandHeader = '🏷️ MALACRIDA TAXI — RÉSERVATION';
+    // Volontairement : pas de prix ni de distance (le chauffeur fixe lui-même)
+    const brandHeader = '🏷️ MALACRIDA TAXI — DEMANDE DE RÉSERVATION';
     const enrichedMessage = `${brandHeader}\n\n${data.message || '(aucun message client)'}`;
-    const dynamicSubject = `[MALACRIDA] Nouvelle réservation — ${data.nom}`;
+    const dynamicSubject = `[MALACRIDA] Demande de réservation — ${data.nom}`;
 
     await emailjs.send(
       serviceId,
@@ -101,10 +102,8 @@ async function sendToEmail(data: ReservationInput): Promise<ChannelResult> {
         client_email: data.email,
         depart: data.depart,
         destination: data.arrivee,
-        distance: data.distanceKm ? `${data.distanceKm} km` : '—',
         date_heure: data.dateHeureLisible,
         date: data.dateHeureLisible,
-        prix_estime: data.prix ? `${data.prix} €` : '—',
         message: enrichedMessage,
         marque: data.marque,
         subject: dynamicSubject,
@@ -127,8 +126,9 @@ async function sendToEmail(data: ReservationInput): Promise<ChannelResult> {
 // exposée dans le bundle public.
 async function sendToWhatsapp(data: ReservationInput): Promise<ChannelResult> {
   try {
+    const brandLabel = data.marque === 'malacrida' ? 'MALACRIDA' : 'PROVENCAL';
     const lines = [
-      `🚗 NOUVELLE RÉSA ${data.marque.toUpperCase()}`,
+      `📋 DEMANDE DE RÉSERVATION — ${brandLabel}`,
       ``,
       `👤 ${data.nom}`,
       `📞 ${data.telephone}`,
@@ -140,8 +140,7 @@ async function sendToWhatsapp(data: ReservationInput): Promise<ChannelResult> {
       `📍 À : ${data.arrivee}`,
       `🕐 ${data.dateHeureLisible}`,
     );
-    if (data.prix) lines.push(`💰 ${data.prix} €`);
-    if (data.distanceKm) lines.push(`📏 ${data.distanceKm} km`);
+    // Volontairement pas de prix ni distance : le chauffeur fixe le tarif lui-même
     if (data.message) lines.push(``, `💬 ${data.message}`);
 
     const r = await fetch('/api/notify-whatsapp', {
