@@ -122,38 +122,37 @@ async function sendToEmail(data: ReservationInput): Promise<ChannelResult> {
   }
 }
 
-// ── Canal 3 : CallMeBot WhatsApp (notification instantanée chauffeur) ───────
+// ── Canal 3 : WhatsApp via fonction serverless /api/notify-whatsapp ─────────
+// La clé CallMeBot reste côté serveur (env vars sans préfixe VITE_), jamais
+// exposée dans le bundle public.
 async function sendToWhatsapp(data: ReservationInput): Promise<ChannelResult> {
   try {
-    const phone = import.meta.env.VITE_CALLMEBOT_PHONE;
-    const apikey = import.meta.env.VITE_CALLMEBOT_APIKEY;
-
-    if (!phone || !apikey) {
-      // Canal désactivé tant que pas configuré — pas une erreur bloquante
-      return { ok: false, error: 'WhatsApp non configuré' };
-    }
-
     const lines = [
       `🚗 NOUVELLE RÉSA ${data.marque.toUpperCase()}`,
       ``,
       `👤 ${data.nom}`,
       `📞 ${data.telephone}`,
-      `📧 ${data.email}`,
+    ];
+    if (data.email) lines.push(`📧 ${data.email}`);
+    lines.push(
       ``,
       `📍 De : ${data.depart}`,
       `📍 À : ${data.arrivee}`,
       `🕐 ${data.dateHeureLisible}`,
-    ];
+    );
     if (data.prix) lines.push(`💰 ${data.prix} €`);
     if (data.distanceKm) lines.push(`📏 ${data.distanceKm} km`);
     if (data.message) lines.push(``, `💬 ${data.message}`);
 
-    const text = encodeURIComponent(lines.join('\n'));
-    const url = `https://api.callmebot.com/whatsapp.php?phone=${encodeURIComponent(phone)}&text=${text}&apikey=${encodeURIComponent(apikey)}`;
-
-    // mode: 'no-cors' nécessaire car CallMeBot ne renvoie pas de headers CORS.
-    // Le message est bien envoyé côté serveur même si on ne peut pas lire la réponse.
-    await fetch(url, { method: 'GET', mode: 'no-cors' });
+    const r = await fetch('/api/notify-whatsapp', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: lines.join('\n') }),
+    });
+    if (!r.ok) {
+      const errBody = await r.json().catch(() => ({} as Record<string, string>));
+      return { ok: false, error: errBody.error || `HTTP ${r.status}` };
+    }
     return { ok: true };
   } catch (err) {
     return {
