@@ -82,6 +82,16 @@ async function sendToEmail(data: ReservationInput): Promise<ChannelResult> {
       return { ok: false, error: 'EmailJS non configuré (variables manquantes)' };
     }
 
+    // Le template EmailJS a un subject hardcodé "Provençal Coast" qui rend
+    // confus le chauffeur Malacrida quand il reçoit l'email. Tant qu'on n'a
+    // pas accès au dashboard EmailJS pour le corriger, on garantit que :
+    //   1. Le subject EST poussé en variable (si le template a {{subject}}, override)
+    //   2. La 1ère ligne du message dit clairement « MALACRIDA TAXI » pour
+    //      éliminer toute ambiguïté visuelle dans le corps de l'email.
+    const brandHeader = '🏷️ MALACRIDA TAXI — RÉSERVATION';
+    const enrichedMessage = `${brandHeader}\n\n${data.message || '(aucun message client)'}`;
+    const dynamicSubject = `[MALACRIDA] Nouvelle réservation — ${data.nom}`;
+
     await emailjs.send(
       serviceId,
       templateId,
@@ -95,8 +105,10 @@ async function sendToEmail(data: ReservationInput): Promise<ChannelResult> {
         date_heure: data.dateHeureLisible,
         date: data.dateHeureLisible,
         prix_estime: data.prix ? `${data.prix} €` : '—',
-        message: data.message || '(aucun message)',
+        message: enrichedMessage,
         marque: data.marque,
+        subject: dynamicSubject,
+        title: dynamicSubject,
         to_email: data.driverEmail,
       },
       publicKey
