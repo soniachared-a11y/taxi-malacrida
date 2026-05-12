@@ -19,6 +19,8 @@ const ContactSection = () => {
   const [message, setMessage] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState('');
+  // Intent du client : réservation par défaut ou simple devis
+  const [intent, setIntent] = useState<'devis' | 'reservation'>('reservation');
 
   // Listen for pre-fill event from Hero form
   useEffect(() => {
@@ -133,9 +135,9 @@ const ContactSection = () => {
                   dateHeureLisible,
                   message,
                   marque: 'malacrida',
-                  intent: 'reservation', // formulaire contact = toujours réservation
+                  intent, // 'devis' ou 'reservation' selon le toggle
                   driverEmail: 'ouerfelli.yassino@gmail.com',
-                  source: 'site-contact',
+                  source: intent === 'devis' ? 'site-devis' : 'site-contact',
                 });
 
                 if (result.ok) {
@@ -147,12 +149,36 @@ const ContactSection = () => {
               }}
             >
 
-              <h3 
+              <h3
                 className="font-serif text-lg md:text-xl mb-3 md:mb-4 text-center"
                 style={{ color: ACCENT_BLUE }}
               >
-                Réservez votre Chauffeur
+                {intent === 'devis' ? 'Demandez votre Devis' : 'Réservez votre Chauffeur'}
               </h3>
+
+              {/* Intent toggle — Devis ou Réservation */}
+              <div className="grid grid-cols-2 gap-2 mb-3">
+                {([
+                  { id: 'reservation', label: 'Réservation', sub: 'Je confirme mon trajet' },
+                  { id: 'devis', label: 'Devis', sub: 'Je veux juste un prix' },
+                ] as const).map((opt) => (
+                  <button
+                    key={opt.id}
+                    type="button"
+                    onClick={() => setIntent(opt.id)}
+                    className={`px-3 py-2.5 rounded-lg border transition-all text-left ${
+                      intent === opt.id
+                        ? 'bg-[#001F3F] text-white border-[#001F3F] shadow-sm'
+                        : 'bg-white text-gray-700 border-gray-200 hover:border-gray-400'
+                    }`}
+                  >
+                    <div className="text-xs font-bold tracking-wider uppercase">{opt.label}</div>
+                    <div className={`text-[10px] mt-0.5 ${intent === opt.id ? 'text-white/75' : 'text-gray-400'}`}>
+                      {opt.sub}
+                    </div>
+                  </button>
+                ))}
+              </div>
 
               <div className="space-y-3">
                 {/* Departure & Arrival - Side by side on larger screens */}
@@ -356,11 +382,11 @@ const ContactSection = () => {
                   {submitting ? (
                     <>
                       <Loader2 className="w-4 h-4 animate-spin" />
-                      <span>Envoi en cours…</span>
+                      <span>{intent === 'devis' ? 'Envoi en cours…' : 'Réservation en cours…'}</span>
                     </>
                   ) : (
                     <>
-                      <span>Obtenir mon Tarif & Réserver</span>
+                      <span>{intent === 'devis' ? 'Demander mon Devis' : 'Confirmer ma Réservation'}</span>
                       <ArrowRight className="w-4 h-4" />
                     </>
                   )}
