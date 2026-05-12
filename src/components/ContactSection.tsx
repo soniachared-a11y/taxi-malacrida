@@ -133,6 +133,7 @@ const ContactSection = () => {
                   dateHeureLisible,
                   message,
                   marque: 'malacrida',
+                  intent: 'reservation', // formulaire contact = toujours réservation
                   driverEmail: 'ouerfelli.yassino@gmail.com',
                   source: 'site-contact',
                 });

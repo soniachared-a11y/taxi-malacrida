@@ -16,6 +16,7 @@ export interface ReservationInput {
   distanceKm?: number;
   message?: string;
   marque: 'malacrida' | 'provencale';
+  intent?: 'devis' | 'reservation'; // type de demande client
   driverEmail: string;
   source?: string;
 }
@@ -89,9 +90,11 @@ async function sendToEmail(data: ReservationInput): Promise<ChannelResult> {
     //   2. La 1ère ligne du message dit clairement « MALACRIDA TAXI » pour
     //      éliminer toute ambiguïté visuelle dans le corps de l'email.
     // Volontairement : pas de prix ni de distance (le chauffeur fixe lui-même)
-    const brandHeader = '🏷️ MALACRIDA TAXI — DEMANDE DE RÉSERVATION';
+    const intentLabel = data.intent === 'devis' ? 'DEMANDE DE DEVIS' : 'DEMANDE DE RÉSERVATION';
+    const intentSubject = data.intent === 'devis' ? 'Demande de devis' : 'Demande de réservation';
+    const brandHeader = `🏷️ MALACRIDA TAXI — ${intentLabel}`;
     const enrichedMessage = `${brandHeader}\n\n${data.message || '(aucun message client)'}`;
-    const dynamicSubject = `[MALACRIDA] Demande de réservation — ${data.nom}`;
+    const dynamicSubject = `[MALACRIDA] ${intentSubject} — ${data.nom}`;
 
     await emailjs.send(
       serviceId,
@@ -127,8 +130,11 @@ async function sendToEmail(data: ReservationInput): Promise<ChannelResult> {
 async function sendToWhatsapp(data: ReservationInput): Promise<ChannelResult> {
   try {
     const brandLabel = data.marque === 'malacrida' ? 'MALACRIDA' : 'PROVENCAL';
+    const isDevis = data.intent === 'devis';
+    const headerIcon = isDevis ? '💼' : '📋';
+    const headerType = isDevis ? 'DEMANDE DE DEVIS' : 'DEMANDE DE RÉSERVATION';
     const lines = [
-      `📋 DEMANDE DE RÉSERVATION — ${brandLabel}`,
+      `${headerIcon} ${headerType} — ${brandLabel}`,
       ``,
       `👤 ${data.nom}`,
       `📞 ${data.telephone}`,

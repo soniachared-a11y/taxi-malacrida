@@ -40,6 +40,8 @@ const BookingForm = () => {
   const [quote, setQuote] = useState<QuoteResult | null>(null);
   const [errorMessage, setErrorMessage] = useState('');
   const [selectedDate, setSelectedDate] = useState<Date>();
+  // Intention du client : devis (juste un prix) ou réservation (confirmation ferme)
+  const [intent, setIntent] = useState<'devis' | 'reservation'>('reservation');
 
   const {
     register,
@@ -108,8 +110,9 @@ const BookingForm = () => {
         distanceKm: quote.distance_km,
         message: data.message || '',
         marque: 'malacrida',
+        intent,
         driverEmail: 'ouerfelli.yassino@gmail.com',
-        source: 'site-hero',
+        source: intent === 'devis' ? 'site-devis' : 'site-hero',
       });
 
       // Au moins un canal a réussi → réservation prise en compte
@@ -269,6 +272,31 @@ const BookingForm = () => {
                   </div>
                 ) : (
                   <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+                    {/* Intent toggle — Devis ou Réservation */}
+                    <div className="grid grid-cols-2 gap-2 mb-2">
+                      {([
+                        { id: 'reservation', label: 'Réservation', sub: 'Je confirme' },
+                        { id: 'devis', label: 'Devis', sub: 'Je veux un prix' },
+                      ] as const).map((opt) => (
+                        <button
+                          key={opt.id}
+                          type="button"
+                          onClick={() => setIntent(opt.id)}
+                          className={cn(
+                            'px-3 py-3 rounded border transition-all text-left',
+                            intent === opt.id
+                              ? 'bg-[#001F3F] text-white border-[#001F3F]'
+                              : 'bg-white text-gray-700 border-gray-200 hover:border-gray-400'
+                          )}
+                        >
+                          <div className="text-xs font-semibold tracking-wider uppercase">{opt.label}</div>
+                          <div className={cn('text-[10px] mt-0.5', intent === opt.id ? 'text-white/70' : 'text-gray-400')}>
+                            {opt.sub}
+                          </div>
+                        </button>
+                      ))}
+                    </div>
+
                     {/* Quote Display */}
                     {quote && (
                       <div className="bg-gray-50 rounded-lg p-4 mb-6">
@@ -430,15 +458,17 @@ const BookingForm = () => {
                       {isLoading ? (
                         <>
                           <Loader2 className="animate-spin mr-2" size={18} />
-                          Réservation en cours...
+                          {intent === 'devis' ? 'Demande en cours...' : 'Réservation en cours...'}
                         </>
                       ) : (
-                        `Confirmer - ${quote?.prix_euros.toFixed(2)} €`
+                        intent === 'devis' ? 'Demander un devis' : 'Confirmer la réservation'
                       )}
                     </Button>
 
                     <p className="text-xs text-gray-400 text-center">
-                      En confirmant, vous acceptez nos conditions générales
+                      {intent === 'devis'
+                        ? 'Vous recevrez une réponse rapide, sans engagement.'
+                        : 'En confirmant, vous acceptez nos conditions générales.'}
                     </p>
                   </form>
                 )}
